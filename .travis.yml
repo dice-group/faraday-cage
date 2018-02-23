@@ -1,0 +1,21 @@
+sudo: false
+language: java
+jdk:
+- oraclejdk9
+addons:
+  apt:
+    packages:
+    - oracle-java9-installer
+before_install:
+- npm install -g gitbook-cli
+install:
+- mvn install -U -Dmaven.test.skip=true
+script:
+- mvn test
+after_success: bash ./scripts/gh-deploy.sh
+notifications:
+  email: false
+env:
+  global:
+  - ENCRYPTION_LABEL: 9aaa931d81ed
+  - COMMIT_AUTHOR_EMAIL: kvndrsslr@gmail.com
