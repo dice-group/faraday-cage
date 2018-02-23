@@ -12,7 +12,7 @@ install:
 - mvn install -U -Dmaven.test.skip=true
 script:
 - mvn test
-after_success: bash ./scripts/gh-deploy.sh
+after: bash ./scripts/gh-deploy.sh
 notifications:
   email: false
 env:
