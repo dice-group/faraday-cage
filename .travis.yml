@@ -7,12 +7,13 @@ addons:
     packages:
     - oracle-java9-installer
 before_install:
-- npm install -g gitbook-cli
 install:
 - mvn install -U -Dmaven.test.skip=true
 script:
 - mvn test
-after: bash ./scripts/gh-deploy.sh
+after_script:
+- npm install -g gitbook-cli
+- bash ./scripts/gh-deploy.sh
 notifications:
   email: false
 env:

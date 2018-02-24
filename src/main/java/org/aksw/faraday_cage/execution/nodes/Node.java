@@ -1,15 +1,17 @@
-package org.aksw.faraday_cage.execution;
+package org.aksw.faraday_cage.execution.nodes;
 
-import org.apache.jena.rdf.model.Model;
-
-import java.util.List;
+import org.aksw.faraday_cage.execution.Execution;
+import org.aksw.faraday_cage.execution.HubExecution;
+import org.aksw.faraday_cage.plugin.Plugin;
+import org.apache.jena.rdf.model.Resource;
+import org.jetbrains.annotations.NotNull;
 
 /**
  *
  *
  *
  */
-public interface ExecutionNode {
+public interface Node<T> extends Execution<T>, HubExecution<T>, Plugin {
 
   class DegreeBounds {
 
@@ -25,16 +27,16 @@ public interface ExecutionNode {
       this.maxOut = maxOut;
     }
 
-    public boolean satisfiedBy(int in, int out) {
+    public boolean notSatisfiedBy(int in, int out) {
       boolean inBounds;
       inBounds  = in >= minIn();
       inBounds &= in <= maxIn();
       inBounds &= out >= minOut();
-      // we only need to check for maxOut if it is greater than 1 as for 1 we apply implicit cloning.
-      if (maxOut() > 1) {
+      // only check maxOut if it is not 1 as for 1 we apply implicit cloning.
+      if (maxOut() != 1) {
         inBounds &= out <= maxOut();
       }
-      return inBounds;
+      return !inBounds;
     }
 
     public int minIn() {
@@ -63,11 +65,7 @@ public interface ExecutionNode {
 
   int getOutDegree();
 
-  void init(int inDegree, int outDegree);
-
-  Model apply(Model model);
-
-  List<Model> apply(List<Model> models);
+  void init(@NotNull Resource id, int inDegree, int outDegree);
 
   /**
    * Get initialization status
