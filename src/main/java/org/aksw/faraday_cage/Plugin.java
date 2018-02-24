@@ -1,6 +1,5 @@
-package org.aksw.faraday_cage.plugin;
+package org.aksw.faraday_cage;
 
-import org.aksw.faraday_cage.Vocabulary;
 import org.apache.jena.rdf.model.Resource;
 import org.jetbrains.annotations.NotNull;
 import org.pf4j.ExtensionPoint;
@@ -10,7 +9,7 @@ import org.pf4j.ExtensionPoint;
  *
  *
  */
-public interface Plugin extends ExtensionPoint, Identifiable {
+public interface Plugin<T> extends ExtensionPoint, IdentifiableExecution<T> {
 
   static Resource getImplementationType(Resource executionId) {
     Resource implementation = executionId.getPropertyResourceValue(Vocabulary.implementedIn());

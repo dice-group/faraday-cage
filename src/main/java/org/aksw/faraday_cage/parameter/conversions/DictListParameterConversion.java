@@ -1,4 +1,4 @@
-package org.aksw.faraday_cage.parametrized.conversions;
+package org.aksw.faraday_cage.parameter.conversions;
 
 import org.apache.jena.ext.com.google.common.collect.Lists;
 import org.apache.jena.rdf.model.Literal;

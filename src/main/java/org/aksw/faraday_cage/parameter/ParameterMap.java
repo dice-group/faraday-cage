@@ -1,6 +1,6 @@
-package org.aksw.faraday_cage.parametrized;
+package org.aksw.faraday_cage.parameter;
 
-import org.aksw.faraday_cage.parametrized.conversions.ParameterConversion;
+import org.aksw.faraday_cage.parameter.conversions.ParameterConversion;
 import org.apache.jena.rdf.model.Resource;
 
 import java.util.Set;

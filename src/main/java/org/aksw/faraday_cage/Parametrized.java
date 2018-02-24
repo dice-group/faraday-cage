@@ -1,6 +1,6 @@
-package org.aksw.faraday_cage.parametrized;
+package org.aksw.faraday_cage;
 
-import org.aksw.faraday_cage.plugin.PluginFactory;
+import org.aksw.faraday_cage.parameter.ParameterMap;
 import org.jetbrains.annotations.NotNull;
 
 

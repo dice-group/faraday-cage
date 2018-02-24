@@ -1,7 +1,7 @@
-package org.aksw.faraday_cage.parametrized;
+package org.aksw.faraday_cage.parameter;
 
-import org.aksw.faraday_cage.parametrized.conversions.ParameterConversion;
-import org.aksw.faraday_cage.parametrized.conversions.StringParameterConversion;
+import org.aksw.faraday_cage.parameter.conversions.ParameterConversion;
+import org.aksw.faraday_cage.parameter.conversions.StringParameterConversion;
 import org.aksw.faraday_cage.Vocabulary;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFNode;

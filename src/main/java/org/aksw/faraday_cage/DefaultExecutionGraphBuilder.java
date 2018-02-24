@@ -1,9 +1,5 @@
-package org.aksw.faraday_cage.execution.graph;
+package org.aksw.faraday_cage;
 
-import org.aksw.faraday_cage.execution.concurrent.CompletableFutureFactory;
-import org.aksw.faraday_cage.execution.Execution;
-import org.aksw.faraday_cage.execution.HubExecution;
-import org.aksw.faraday_cage.plugin.Identifiable;
 import org.apache.jena.rdf.model.Resource;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -22,7 +18,7 @@ import java.util.function.Function;
  *
  *
  */
-public class DefaultExecutionGraphBuilder<U extends Execution<T> & Identifiable, V extends HubExecution<T> & Identifiable, T> implements ExecutionGraphBuilder<U, V> {
+public class DefaultExecutionGraphBuilder<U extends IdentifiableExecution<T>, T> implements ExecutionGraphBuilder<U> {
 
   private static final Logger logger = LoggerFactory.getLogger(DefaultExecutionGraphBuilder.class);
 
@@ -88,9 +84,9 @@ public class DefaultExecutionGraphBuilder<U extends Execution<T> & Identifiable,
     private int outCount = 0;
     private int inCount = 0;
     private boolean firstOut = true;
-    private V hubExecution;
+    private U hubExecution;
 
-    private Hub(V hubExecution) {
+    private Hub(U hubExecution) {
       this.hubExecution = hubExecution;
     }
 
@@ -125,7 +121,7 @@ public class DefaultExecutionGraphBuilder<U extends Execution<T> & Identifiable,
         logger.info("Hub executes!");
         return execute();
       }
-      return CompletableFutureFactory.getCompleted(null);
+      return completableFutureFactory.getCompletedInstance(null);
     }
 
     /**
@@ -164,7 +160,7 @@ public class DefaultExecutionGraphBuilder<U extends Execution<T> & Identifiable,
 
   @NotNull
   @Override
-  public ExecutionGraphBuilder addStartHub(@NotNull V hubExecution) {
+  public ExecutionGraphBuilder addStartHub(@NotNull U hubExecution) {
     Hub hub = new Hub(hubExecution);
     hubs.put(hubExecution.getId(), hub);
     startHubs.add(hub);
@@ -179,7 +175,7 @@ public class DefaultExecutionGraphBuilder<U extends Execution<T> & Identifiable,
   }
 
   @Override
-  public ExecutionGraphBuilder chainIntoHub(@NotNull V to, int toPort) {
+  public ExecutionGraphBuilder chainIntoHub(@NotNull U to, int toPort) {
     if (!hubs.containsKey(to.getId())){
       hubs.put(to.getId(), new Hub(to));
     }
@@ -189,7 +185,7 @@ public class DefaultExecutionGraphBuilder<U extends Execution<T> & Identifiable,
   }
 
   @Override
-  public ExecutionGraphBuilder chainFromHub(@NotNull V from, int fromPort, @NotNull U execution) {
+  public ExecutionGraphBuilder chainFromHub(@NotNull U from, int fromPort, @NotNull U execution) {
     if (!hubs.containsKey(from.getId())){
       throw new IllegalStateException("Hub needs to be declared before outgoing connections can be made");
     }
@@ -201,7 +197,7 @@ public class DefaultExecutionGraphBuilder<U extends Execution<T> & Identifiable,
 
   @NotNull
   @Override
-  public ExecutionGraphBuilder chainFromHubToHub(@NotNull V from, int fromPort, @NotNull V to, int toPort) {
+  public ExecutionGraphBuilder chainFromHubToHub(@NotNull U from, int fromPort, @NotNull U to, int toPort) {
     if (!hubs.containsKey(from.getId())){
       throw new IllegalStateException("Hub needs to be declared before outgoing connections can be made");
     }

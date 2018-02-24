@@ -1,8 +1,6 @@
-package org.aksw.faraday_cage.plugin;
+package org.aksw.faraday_cage;
 
-import org.aksw.faraday_cage.Vocabulary;
 import org.apache.jena.rdf.model.Resource;
-import org.pf4j.DefaultPluginManager;
 import org.pf4j.ExtensionFactory;
 import org.pf4j.PluginManager;
 
@@ -16,12 +14,12 @@ import java.util.stream.Collectors;
  * <p>
  * Create an instance of this
  */
-public class PluginFactory<T extends Plugin> implements IdentifiableFactory<T>{
+public class PluginFactory<T extends Plugin> implements IdentifiableExecutionFactory<T> {
 
   /**
    * pf4j plugin manager
    */
-  private final PluginManager pluginManager = new DefaultPluginManager();
+  private PluginManager pluginManager;
   /**
    * pf4j extension factory
    */
@@ -35,16 +33,18 @@ public class PluginFactory<T extends Plugin> implements IdentifiableFactory<T>{
    */
   private Class<T> clazz;
 
+
   /**
    * Constructor, takes an instance of this {@code ParametrizedPluginFactory}s type parameters
    * {@code Class}.
    *
    * @param clazz {@code Class} instance for this {@code ParametrizedPluginFactory}s type parameter
+   * @param pluginManager the {@code PluginManager} to be used in this {@code PluginFactory}
+   *
    */
-  public PluginFactory(Class<T> clazz) {
+  public PluginFactory(Class<T> clazz, PluginManager pluginManager) {
     this.clazz = clazz;
-    pluginManager.loadPlugins();
-    pluginManager.startPlugins();
+    this.pluginManager = pluginManager;
     this.factory = pluginManager.getExtensionFactory();
     this.classMap = createClassMap();
   }

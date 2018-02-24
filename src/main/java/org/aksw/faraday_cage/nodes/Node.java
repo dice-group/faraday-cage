@@ -1,8 +1,6 @@
-package org.aksw.faraday_cage.execution.nodes;
+package org.aksw.faraday_cage.nodes;
 
-import org.aksw.faraday_cage.execution.Execution;
-import org.aksw.faraday_cage.execution.HubExecution;
-import org.aksw.faraday_cage.plugin.Plugin;
+import org.aksw.faraday_cage.Plugin;
 import org.apache.jena.rdf.model.Resource;
 import org.jetbrains.annotations.NotNull;
 
@@ -11,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
  *
  *
  */
-public interface Node<T> extends Execution<T>, HubExecution<T>, Plugin {
+public interface Node<T> extends Plugin<T> {
 
   class DegreeBounds {
 
@@ -27,16 +25,20 @@ public interface Node<T> extends Execution<T>, HubExecution<T>, Plugin {
       this.maxOut = maxOut;
     }
 
-    public boolean notSatisfiedBy(int in, int out) {
+    public boolean notSatisfiedBy(int in, int out, boolean withImplicitCloning) {
       boolean inBounds;
       inBounds  = in >= minIn();
       inBounds &= in <= maxIn();
       inBounds &= out >= minOut();
-      // only check maxOut if it is not 1 as for 1 we apply implicit cloning.
-      if (maxOut() != 1) {
+      // only check maxOut if it is not 1 when using implicit cloning
+      if (maxOut() != 1 || !withImplicitCloning) {
         inBounds &= out <= maxOut();
       }
       return !inBounds;
+    }
+
+    public boolean notSatisfiedBy(int in, int out) {
+      return notSatisfiedBy(in, out, false);
     }
 
     public int minIn() {

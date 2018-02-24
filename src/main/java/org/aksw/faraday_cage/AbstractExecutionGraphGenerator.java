@@ -1,11 +1,6 @@
 package org.aksw.faraday_cage;
 
 import com.google.common.collect.Sets;
-import org.aksw.faraday_cage.execution.Execution;
-import org.aksw.faraday_cage.execution.HubExecution;
-import org.aksw.faraday_cage.execution.graph.ExecutionGraph;
-import org.aksw.faraday_cage.execution.graph.ExecutionGraphBuilder;
-import org.aksw.faraday_cage.plugin.Identifiable;
 import org.apache.jena.arq.querybuilder.SelectBuilder;
 import org.apache.jena.query.Query;
 import org.apache.jena.rdf.model.Model;
@@ -22,14 +17,14 @@ import static org.aksw.faraday_cage.util.QueryHelper.forEachResultOf;
  *
  *
  */
-public abstract class AbstractExecutionGraphGenerator<U extends Execution<T> & Identifiable, V extends HubExecution<T> & Identifiable, T> {
+public abstract class AbstractExecutionGraphGenerator<U extends IdentifiableExecution> {
 
   private Map<Resource, List<Resource>> executionInputs = new HashMap<>();
   private Map<Resource, List<Resource>> executionOutputs = new HashMap<>();
   private Model configGraph;
-  private ExecutionGraphBuilder<U, V> builder;
+  private ExecutionGraphBuilder<U> builder;
 
-  public AbstractExecutionGraphGenerator(Model configGraph, ExecutionGraphBuilder<U, V> builder) {
+  public AbstractExecutionGraphGenerator(Model configGraph, ExecutionGraphBuilder<U> builder) {
     this.configGraph = configGraph;
     this.builder = builder;
   }
@@ -41,7 +36,7 @@ public abstract class AbstractExecutionGraphGenerator<U extends Execution<T> & I
     Deque<List<Resource>> stack = new ArrayDeque<>();
     for (Resource startNode : startNodes) {
       if (isHub(startNode)) {
-        builder.addStartHub(createAndInitHubExecution(startNode));
+        builder.addStartHub(createAndInitExecution(startNode));
       } else {
         builder.addStart(createAndInitExecution(startNode));
       }
@@ -54,16 +49,16 @@ public abstract class AbstractExecutionGraphGenerator<U extends Execution<T> & I
       int outPort = executionOutputs.get(parent).indexOf(node);
       int inPort = executionInputs.get(node).indexOf(parent);
       if (isHub(parent) && isHub(node)) {
-        V vParent = createAndInitHubExecution(parent);
-        V vNode = createAndInitHubExecution(node);
-        builder.chainFromHubToHub(vParent, outPort, vNode, inPort);
-      } else if (isHub(parent)) {
-        V vParent = createAndInitHubExecution(parent);
+        U uParent = createAndInitExecution(parent);
         U uNode = createAndInitExecution(node);
-        builder.chainFromHub(vParent, outPort, uNode);
+        builder.chainFromHubToHub(uParent, outPort, uNode, inPort);
+      } else if (isHub(parent)) {
+        U uParent = createAndInitExecution(parent);
+        U uNode = createAndInitExecution(node);
+        builder.chainFromHub(uParent, outPort, uNode);
       } else if (isHub(node)) {
-        V vNode = createAndInitHubExecution(node);
-        builder.chainIntoHub(vNode, inPort);
+        U uNode = createAndInitExecution(node);
+        builder.chainIntoHub(uNode, inPort);
       } else {
         U uNode = createAndInitExecution(node);
         builder.chain(uNode);
@@ -75,13 +70,11 @@ public abstract class AbstractExecutionGraphGenerator<U extends Execution<T> & I
 
   protected abstract U createAndInitExecution(Resource executionId);
 
-  protected abstract V createAndInitHubExecution(Resource hubExecutionId);
 
   protected final boolean isHub(Resource execution) {
     return executionInputs.get(execution).size() > 1 || executionOutputs.get(execution).size() > 1;
   }
 
-  //@todo: implement logic for multiple links between two hubs
   private void fillMap(Map<Resource, List<Resource>> map, Resource searchProperty) {
     Query q = new SelectBuilder()
       .setDistinct(true)

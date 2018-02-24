@@ -1,4 +1,4 @@
-package org.aksw.faraday_cage.parametrized;
+package org.aksw.faraday_cage.parameter;
 
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;

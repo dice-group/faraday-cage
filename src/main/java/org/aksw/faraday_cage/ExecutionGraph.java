@@ -1,4 +1,4 @@
-package org.aksw.faraday_cage.execution.graph;
+package org.aksw.faraday_cage;
 
 /**
  *

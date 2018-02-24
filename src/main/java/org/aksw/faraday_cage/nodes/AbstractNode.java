@@ -1,4 +1,4 @@
-package org.aksw.faraday_cage.execution.nodes;
+package org.aksw.faraday_cage.nodes;
 
 import org.apache.jena.rdf.model.Resource;
 import org.jetbrains.annotations.NotNull;
@@ -15,6 +15,15 @@ public abstract class AbstractNode<T> implements Node<T> {
   private int inDegree = -1;
   private int outDegree = -1;
   private Resource id = null;
+  private boolean useImplicitCloning = false;
+
+  public static abstract class WithImplicitCloning<T> extends AbstractNode<T> {
+
+    public WithImplicitCloning() {
+      this.useImplicitCloning(true);
+    }
+
+  }
 
   @Override
   public final int getInDegree() {
@@ -29,7 +38,7 @@ public abstract class AbstractNode<T> implements Node<T> {
   @Override
   public final void init(@NotNull Resource id, int inDegree, int outDegree) {
     init(id);
-    if (getDegreeBounds().notSatisfiedBy(inDegree, outDegree)) {
+    if (getDegreeBounds().notSatisfiedBy(inDegree, outDegree, useImplicitCloning)) {
       throw new RuntimeException("Arity not valid.");
     } else {
       this.inDegree = inDegree;
@@ -67,7 +76,8 @@ public abstract class AbstractNode<T> implements Node<T> {
     }
     List<T> result = safeApply(data);
     // implicit cloning implemented here
-    if (outDegree > result.size() && result.size() == 1 && getDegreeBounds().maxOut() == 1) {
+    if (useImplicitCloning
+      && outDegree > result.size() && result.size() == 1 && getDegreeBounds().maxOut() == 1) {
       for (int i = 0; i < outDegree - 1; i++) {
         result.add(deepCopy(result.get(0)));
       }
@@ -75,12 +85,17 @@ public abstract class AbstractNode<T> implements Node<T> {
     return result;
   }
 
-  protected abstract List<T> safeApply(List<T> data);
-
-  protected abstract T deepCopy(T data);
-
   @Override
   public boolean isInitialized() {
     return getInDegree() >= 0 && getOutDegree() >= 0 && id != null;
   }
+
+  protected abstract List<T> safeApply(List<T> data);
+
+  protected abstract T deepCopy(T data);
+
+  final void useImplicitCloning(boolean useImplicitCloning) {
+    this.useImplicitCloning = useImplicitCloning;
+  }
+
 }

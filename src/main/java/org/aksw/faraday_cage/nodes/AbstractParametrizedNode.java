@@ -1,6 +1,6 @@
-package org.aksw.faraday_cage.execution.nodes;
+package org.aksw.faraday_cage.nodes;
 
-import org.aksw.faraday_cage.parametrized.ParameterMap;
+import org.aksw.faraday_cage.parameter.ParameterMap;
 import org.apache.jena.rdf.model.Resource;
 import org.jetbrains.annotations.NotNull;
 
@@ -12,6 +12,14 @@ import org.jetbrains.annotations.NotNull;
 public abstract class AbstractParametrizedNode<T> extends AbstractNode<T> implements ParametrizedNode<T> {
 
   private ParameterMap parameterMap = null;
+
+  public static abstract class WithImplicitCloning<T> extends AbstractParametrizedNode<T> {
+
+    public WithImplicitCloning() {
+      this.useImplicitCloning(true);
+    }
+
+  }
 
   @Override
   public final void init(@NotNull Resource id, int inDegree, int outDegree, @NotNull ParameterMap parameterMap) {
