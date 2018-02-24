@@ -1,12 +1,11 @@
 package org.aksw.faraday_cage.plugin;
 
-import org.aksw.faraday_cage.rdf.config.Vocabulary;
+import org.aksw.faraday_cage.Vocabulary;
 import org.apache.jena.rdf.model.Resource;
 import org.pf4j.DefaultPluginManager;
 import org.pf4j.ExtensionFactory;
 import org.pf4j.PluginManager;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

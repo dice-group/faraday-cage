@@ -1,4 +1,4 @@
-package org.aksw.faraday_cage.rdf.config;
+package org.aksw.faraday_cage;
 
 import com.google.common.collect.Sets;
 import org.aksw.faraday_cage.execution.Execution;
@@ -15,7 +15,7 @@ import org.apache.jena.rdf.model.Resource;
 
 import java.util.*;
 
-import static org.aksw.faraday_cage.rdf.util.QueryHelper.forEachResultOf;
+import static org.aksw.faraday_cage.util.QueryHelper.forEachResultOf;
 
 /**
  *

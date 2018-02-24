@@ -1,6 +1,6 @@
 package org.aksw.faraday_cage.plugin;
 
-import org.aksw.faraday_cage.rdf.config.Vocabulary;
+import org.aksw.faraday_cage.Vocabulary;
 import org.apache.jena.rdf.model.Resource;
 import org.jetbrains.annotations.NotNull;
 import org.pf4j.ExtensionPoint;

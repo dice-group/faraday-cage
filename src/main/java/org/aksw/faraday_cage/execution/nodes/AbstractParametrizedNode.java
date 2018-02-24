@@ -1,6 +1,6 @@
 package org.aksw.faraday_cage.execution.nodes;
 
-import org.aksw.faraday_cage.plugin.parametrized.ParameterMap;
+import org.aksw.faraday_cage.parametrized.ParameterMap;
 import org.apache.jena.rdf.model.Resource;
 import org.jetbrains.annotations.NotNull;
 

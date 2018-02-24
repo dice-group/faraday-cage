@@ -1,4 +1,4 @@
-package org.aksw.faraday_cage.rdf.util;
+package org.aksw.faraday_cage.util;
 
 import java.util.ArrayList;
 import java.util.List;

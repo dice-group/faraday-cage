@@ -1,6 +1,6 @@
 package org.aksw.faraday_cage.execution.graph;
 
-import org.aksw.faraday_cage.concurrent.CompletableFutureFactory;
+import org.aksw.faraday_cage.execution.concurrent.CompletableFutureFactory;
 import org.aksw.faraday_cage.execution.Execution;
 import org.aksw.faraday_cage.execution.HubExecution;
 import org.aksw.faraday_cage.plugin.Identifiable;

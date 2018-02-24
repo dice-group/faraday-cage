@@ -1,4 +1,4 @@
-package org.aksw.faraday_cage.plugin.parametrized.conversions;
+package org.aksw.faraday_cage.parametrized.conversions;
 
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;

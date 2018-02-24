@@ -1,4 +1,4 @@
-package org.aksw.faraday_cage.concurrent;
+package org.aksw.faraday_cage.execution.concurrent;
 
 import java.util.concurrent.CompletableFuture;
 

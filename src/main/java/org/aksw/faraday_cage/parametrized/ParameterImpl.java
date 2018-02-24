@@ -1,8 +1,8 @@
-package org.aksw.faraday_cage.parameter;
+package org.aksw.faraday_cage.parametrized;
 
-import org.aksw.faraday_cage.parameter.conversion.ParameterConversion;
-import org.aksw.faraday_cage.parameter.conversion.StringParameterConversion;
-import org.aksw.deer.vocabulary.DEER;
+import org.aksw.faraday_cage.parametrized.conversions.ParameterConversion;
+import org.aksw.faraday_cage.parametrized.conversions.StringParameterConversion;
+import org.aksw.faraday_cage.Vocabulary;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFNode;
 
@@ -15,11 +15,11 @@ public class ParameterImpl implements Parameter {
   private ParameterConversion conversion;
 
   public ParameterImpl(String propertyName) {
-    this(DEER.property(propertyName), StringParameterConversion.getInstance(), true);
+    this(Vocabulary.property(propertyName), StringParameterConversion.getInstance(), true);
   }
 
   public ParameterImpl(String propertyName, ParameterConversion conversion, boolean required) {
-    this(DEER.property(propertyName), conversion, required);
+    this(Vocabulary.property(propertyName), conversion, required);
   }
 
   private ParameterImpl(Property property, ParameterConversion conversion, boolean required) {
