@@ -20,7 +20,7 @@ public interface Parametrized {
 
   /**
    * Create an uninitialized {@code ParameterMap} to be filled by the
-   * {@link ExecutionModelGenerator}.
+   * {@link ExecutionGraphGenerator}.
    *
    * @return  uninitialized {@code ParameterMap} containing all allowed {@code Parameter}
    */
