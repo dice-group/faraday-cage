@@ -18,6 +18,10 @@ public class ParameterImpl implements Parameter {
     this(Vocabulary.property(propertyName), StringParameterConversion.getInstance(), true);
   }
 
+  public ParameterImpl(String propertyName, boolean required) {
+    this(Vocabulary.property(propertyName), StringParameterConversion.getInstance(), required);
+  }
+
   public ParameterImpl(String propertyName, ParameterConversion conversion, boolean required) {
     this(Vocabulary.property(propertyName), conversion, required);
   }
@@ -65,7 +69,7 @@ public class ParameterImpl implements Parameter {
 
   @Override
   public String toString() {
-    return this.getProperty().toString() + " [required]";
+    return this.getProperty().toString() + (required ? " [required]" : "");
   }
 
 }

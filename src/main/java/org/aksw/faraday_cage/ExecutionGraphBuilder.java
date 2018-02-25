@@ -7,19 +7,19 @@ import org.jetbrains.annotations.NotNull;
  *
  *
  */
-public interface ExecutionGraphBuilder<T extends IdentifiableExecution> {
+public interface ExecutionGraphBuilder<T> {
 
-  @NotNull ExecutionGraphBuilder addStart(@NotNull T execution);
+  @NotNull ExecutionGraphBuilder addStart(@NotNull IdentifiableExecution<T> execution);
 
-  @NotNull ExecutionGraphBuilder addStartHub(@NotNull T hubExecution);
+  @NotNull ExecutionGraphBuilder addStartHub(@NotNull IdentifiableExecution<T> hubExecution);
 
-  @NotNull ExecutionGraphBuilder chain(@NotNull T execution);
+  @NotNull ExecutionGraphBuilder chain(@NotNull IdentifiableExecution<T> execution);
 
-  ExecutionGraphBuilder chainIntoHub(@NotNull T to, int toPort);
+  ExecutionGraphBuilder chainIntoHub(@NotNull IdentifiableExecution<T> to, int toPort);
 
-  ExecutionGraphBuilder chainFromHub(@NotNull T from, int fromPort, @NotNull T execution);
+  ExecutionGraphBuilder chainFromHub(@NotNull IdentifiableExecution<T> from, int fromPort, @NotNull IdentifiableExecution<T> execution);
 
-  @NotNull ExecutionGraphBuilder chainFromHubToHub(@NotNull T from, int fromPort, @NotNull T to, int toPort);
+  @NotNull ExecutionGraphBuilder chainFromHubToHub(@NotNull IdentifiableExecution<T> from, int fromPort, @NotNull IdentifiableExecution<T> to, int toPort);
 
   @NotNull ExecutionGraph build();
 

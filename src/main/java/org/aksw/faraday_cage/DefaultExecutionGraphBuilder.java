@@ -18,14 +18,14 @@ import java.util.function.Function;
  *
  *
  */
-public class DefaultExecutionGraphBuilder<U extends IdentifiableExecution<T>, T> implements ExecutionGraphBuilder<U> {
+public class DefaultExecutionGraphBuilder<T> implements ExecutionGraphBuilder<T> {
 
   private static final Logger logger = LoggerFactory.getLogger(DefaultExecutionGraphBuilder.class);
 
   private List<Pipeline> startPipelines = new ArrayList<>();
   private List<Hub> startHubs = new ArrayList<>();
   private Map<Resource, Hub> hubs = new HashMap<>();
-  private Pipeline currentPipe = new Pipeline();
+  private Pipeline currentPipe;
   private CompletableFutureFactory completableFutureFactory;
   private CompletableFuture<T> trigger;
   private CompletableFuture<T> joiner;
@@ -40,7 +40,7 @@ public class DefaultExecutionGraphBuilder<U extends IdentifiableExecution<T>, T>
       this.callBack = fn;
     }
 
-    void chain(U fn) {
+    void chain(IdentifiableExecution<T> fn) {
       this.result = result.thenApply(fn::apply);
     }
 
@@ -84,9 +84,9 @@ public class DefaultExecutionGraphBuilder<U extends IdentifiableExecution<T>, T>
     private int outCount = 0;
     private int inCount = 0;
     private boolean firstOut = true;
-    private U hubExecution;
+    private IdentifiableExecution<T> hubExecution;
 
-    private Hub(U hubExecution) {
+    private Hub(IdentifiableExecution<T> hubExecution) {
       this.hubExecution = hubExecution;
     }
 
@@ -97,6 +97,7 @@ public class DefaultExecutionGraphBuilder<U extends IdentifiableExecution<T>, T>
     }
 
     void addOut(Pipeline out, int outIndex) {
+      outCount++;
       CompletableFuture<T> x;
       if (firstOut) {
         firstOut = false;
@@ -129,7 +130,7 @@ public class DefaultExecutionGraphBuilder<U extends IdentifiableExecution<T>, T>
      * encapsulated operator and in turn passing that operators output models as input to the
      * outgoing {@code ExecutionPipeline}s.
      */
-    public CompletableFuture<T> execute() {
+    CompletableFuture<T> execute() {
       this.outDates = hubExecution.apply(inDates);
       if (outDates.size() != outCount) {
         throw new RuntimeException(
@@ -147,11 +148,12 @@ public class DefaultExecutionGraphBuilder<U extends IdentifiableExecution<T>, T>
     this.completableFutureFactory = completableFutureFactory;
     this.trigger = completableFutureFactory.getInstance();
     this.joiner = completableFutureFactory.getCompletedInstance(null);
+    this.currentPipe = new Pipeline();
   }
 
   @NotNull
   @Override
-  public ExecutionGraphBuilder addStart(@NotNull U execution) {
+  public ExecutionGraphBuilder addStart(@NotNull IdentifiableExecution<T> execution) {
     currentPipe = new Pipeline();
     currentPipe.chain(execution);
     startPipelines.add(currentPipe);
@@ -160,7 +162,7 @@ public class DefaultExecutionGraphBuilder<U extends IdentifiableExecution<T>, T>
 
   @NotNull
   @Override
-  public ExecutionGraphBuilder addStartHub(@NotNull U hubExecution) {
+  public ExecutionGraphBuilder addStartHub(@NotNull IdentifiableExecution<T> hubExecution) {
     Hub hub = new Hub(hubExecution);
     hubs.put(hubExecution.getId(), hub);
     startHubs.add(hub);
@@ -169,13 +171,13 @@ public class DefaultExecutionGraphBuilder<U extends IdentifiableExecution<T>, T>
 
   @NotNull
   @Override
-  public ExecutionGraphBuilder chain(@NotNull U execution) {
+  public ExecutionGraphBuilder chain(@NotNull IdentifiableExecution<T> execution) {
     currentPipe.chain(execution);
     return this;
   }
 
   @Override
-  public ExecutionGraphBuilder chainIntoHub(@NotNull U to, int toPort) {
+  public ExecutionGraphBuilder chainIntoHub(@NotNull IdentifiableExecution<T> to, int toPort) {
     if (!hubs.containsKey(to.getId())){
       hubs.put(to.getId(), new Hub(to));
     }
@@ -185,7 +187,7 @@ public class DefaultExecutionGraphBuilder<U extends IdentifiableExecution<T>, T>
   }
 
   @Override
-  public ExecutionGraphBuilder chainFromHub(@NotNull U from, int fromPort, @NotNull U execution) {
+  public ExecutionGraphBuilder chainFromHub(@NotNull IdentifiableExecution<T> from, int fromPort, @NotNull IdentifiableExecution<T> execution) {
     if (!hubs.containsKey(from.getId())){
       throw new IllegalStateException("Hub needs to be declared before outgoing connections can be made");
     }
@@ -197,7 +199,7 @@ public class DefaultExecutionGraphBuilder<U extends IdentifiableExecution<T>, T>
 
   @NotNull
   @Override
-  public ExecutionGraphBuilder chainFromHubToHub(@NotNull U from, int fromPort, @NotNull U to, int toPort) {
+  public ExecutionGraphBuilder chainFromHubToHub(@NotNull IdentifiableExecution<T> from, int fromPort, @NotNull IdentifiableExecution<T> to, int toPort) {
     if (!hubs.containsKey(from.getId())){
       throw new IllegalStateException("Hub needs to be declared before outgoing connections can be made");
     }

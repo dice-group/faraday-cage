@@ -13,14 +13,6 @@ public class Vocabulary {
 
   private static String uri = "http://aksw.org/faraday_cage/#";
 
-  public static Resource executionNode() {
-    return resource("ExecutionNode");
-  }
-
-  public static Resource parametrizedExecutionNode() {
-    return resource("ParametrizedExecutionNode");
-  }
-
   public static Property implementedIn() {
     return property("implementedIn");
   }

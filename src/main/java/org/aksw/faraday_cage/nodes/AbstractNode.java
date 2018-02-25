@@ -39,7 +39,7 @@ public abstract class AbstractNode<T> implements Node<T> {
   public final void init(@NotNull Resource id, int inDegree, int outDegree) {
     init(id);
     if (getDegreeBounds().notSatisfiedBy(inDegree, outDegree, useImplicitCloning)) {
-      throw new RuntimeException("Arity not valid.");
+      throw new RuntimeException("Invalid in/out degree of node " + id);
     } else {
       this.inDegree = inDegree;
       this.outDegree = outDegree;
@@ -59,7 +59,7 @@ public abstract class AbstractNode<T> implements Node<T> {
 
   @Override
   public final T apply(T data) {
-    List<T> dates = apply(List.of(data));
+    List<T> dates = apply(data == null ? List.of() : List.of(data));
     if (!dates.isEmpty()) {
       return dates.get(0);
     } else if (outDegree == 0) {

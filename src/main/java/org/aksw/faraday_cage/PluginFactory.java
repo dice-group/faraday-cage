@@ -7,6 +7,7 @@ import org.pf4j.PluginManager;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
 /**
@@ -14,7 +15,7 @@ import java.util.stream.Collectors;
  * <p>
  * Create an instance of this
  */
-public class PluginFactory<T extends Plugin> implements IdentifiableExecutionFactory<T> {
+public class PluginFactory<V extends Plugin<T>, T> implements IdentifiableExecutionFactory<T> {
 
   /**
    * pf4j plugin manager
@@ -31,8 +32,7 @@ public class PluginFactory<T extends Plugin> implements IdentifiableExecutionFac
   /**
    * this {@code ParametrizedPluginFactory}s type parameters {@code Class} instance
    */
-  private Class<T> clazz;
-
+  private Class<V> clazz;
 
   /**
    * Constructor, takes an instance of this {@code ParametrizedPluginFactory}s type parameters
@@ -42,7 +42,7 @@ public class PluginFactory<T extends Plugin> implements IdentifiableExecutionFac
    * @param pluginManager the {@code PluginManager} to be used in this {@code PluginFactory}
    *
    */
-  public PluginFactory(Class<T> clazz, PluginManager pluginManager) {
+  public PluginFactory(Class<V> clazz, PluginManager pluginManager) {
     this.clazz = clazz;
     this.pluginManager = pluginManager;
     this.factory = pluginManager.getExtensionFactory();
@@ -69,7 +69,7 @@ public class PluginFactory<T extends Plugin> implements IdentifiableExecutionFac
    * @param id  identifier of the instance to create
    * @return  instance of the {@code ParametrizedPlugin} identified by {@code id}.
    */
-  public final T create(Resource id) {
+  public final V create(Resource id) {
     Resource type = Plugin.getImplementationType(id);
     if (!classMap.containsKey(type)) {
       throw new RuntimeException(clazz.getName() + " implementation for declaration \"" + type
@@ -80,15 +80,9 @@ public class PluginFactory<T extends Plugin> implements IdentifiableExecutionFac
         throw new RuntimeException("Plugin \"" + type + "\" required as " + clazz.getName()
           + ", but has type " + o.getClass().getName());
       } else {
-        T plugin = clazz.cast(o);
-        init(plugin, id);
-        return plugin;
+        return clazz.cast(o);
       }
     }
-  }
-
-  protected void init(T plugin, Resource id) {
-    plugin.init(id);
   }
 
   /**
