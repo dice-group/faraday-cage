@@ -27,16 +27,23 @@ Will be made available with the first stable release.
 ```
 <dependencies>
   <dependency>
-    <groupId>com.github.dice-group</groupId>
+    <groupId>org.aksw.faraday_cage</groupId>
     <artifactId>faraday-cage</artifactId>
     <version>{insert version here}</version>
   </dependency>
 </dependencies>
 
 <repositories>
+ <repository>
+      <id>maven.aksw.internal</id>
+      <name>University Leipzig, AKSW Maven2 Internal Repository</name>
+      <url>http://maven.aksw.org/repository/internal/</url>
+    </repository>
+
     <repository>
-        <id>jitpack.io</id>
-        <url>https://jitpack.io</url>
+      <id>maven.aksw.snapshots</id>
+      <name>University Leipzig, AKSW Maven2 Snapshot Repository</name>
+      <url>http://maven.aksw.org/repository/snapshots/</url>
     </repository>
 </repositories>
 ```
