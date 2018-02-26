@@ -29,7 +29,7 @@ Will be made available with the first stable release.
   <dependency>
     <groupId>com.github.dice-group</groupId>
     <artifactId>faraday-cage</artifactId>
-    <version>0.0.1</version>
+    <version>{insert version here}</version>
   </dependency>
 </dependencies>
 
