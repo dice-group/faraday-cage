@@ -23,64 +23,69 @@ public class ExecutionGraphGenerator<T> {
 
   private Map<Resource, List<Resource>> executionInputs = new HashMap<>();
   private Map<Resource, List<Resource>> executionOutputs = new HashMap<>();
-  private Set<Resource> visitedHubs = new HashSet<>();
+  private HashMap<Resource, IdentifiableExecution<T>> visitedHubs = new HashMap<>();
   private Model configGraph;
   private ExecutionGraphBuilder<T> builder;
   private IdentifiableExecutionFactory<T> factory;
+  private Deque<List<Resource>> stack;
 
   public ExecutionGraphGenerator(Model configGraph, ExecutionGraphBuilder<T> builder,
                                  IdentifiableExecutionFactory<T> factory) {
     this.configGraph = configGraph;
     this.builder = builder;
     this.factory = factory;
+    this.stack = new ArrayDeque<>();
   }
 
   public final ExecutionGraph generate() {
     fillMap(executionInputs, Vocabulary.hasInput());
     fillMap(executionOutputs, Vocabulary.hasOutput());
     Set<Resource> startNodes = getStartNodes();
-    Deque<List<Resource>> stack = new ArrayDeque<>();
     startNodes.forEach(node -> stack.push(List.of(node)));
     while (!stack.isEmpty()) {
       List<Resource> pair = stack.pop();
       if (pair.size() == 1) {
         Resource startNode = pair.get(0);
+        populateStackAndMarkVisited(startNode);
         if (isHub(startNode)) {
-          builder.addStartHub(createAndInitExecution(startNode));
+          builder.addStartHub(visitedHubs.get(startNode));
         } else {
           builder.addStart(createAndInitExecution(startNode));
         }
-        populateStack(stack, startNode);
       } else {
         Resource parent = pair.get(0);
         Resource node = pair.get(1);
+        populateStackAndMarkVisited(node);
         int outPort = getNodeOutputs(parent).indexOf(node);
         int inPort = getNodeInputs(node).indexOf(parent);
-        if (isHub(parent) && isHub(node)) {
-          IdentifiableExecution<T> uParent = createAndInitExecution(parent);
-          IdentifiableExecution<T> uNode = createAndInitExecution(node);
+        boolean parentIsHub = isHub(parent);
+        boolean nodeIsHub = isHub(node);
+        if (parentIsHub && nodeIsHub) {
+          IdentifiableExecution<T> uParent = visitedHubs.get(parent);
+          IdentifiableExecution<T> uNode = visitedHubs.get(node);
           builder.chainFromHubToHub(uParent, outPort, uNode, inPort);
-        } else if (isHub(parent)) {
-          IdentifiableExecution<T> uParent = createAndInitExecution(parent);
+        } else if (parentIsHub) {
+          IdentifiableExecution<T> uParent = visitedHubs.get(parent);
           IdentifiableExecution<T> uNode = createAndInitExecution(node);
           builder.chainFromHub(uParent, outPort, uNode);
-        } else if (isHub(node)) {
-          IdentifiableExecution<T> uNode = createAndInitExecution(node);
+        } else if (nodeIsHub) {
+          IdentifiableExecution<T> uNode = visitedHubs.get(node);
           builder.chainIntoHub(uNode, inPort);
         } else {
           IdentifiableExecution<T> uNode = createAndInitExecution(node);
           builder.chain(uNode);
         }
-        populateStack(stack, node);
       }
     }
     return builder.build();
   }
 
-  private void populateStack(Deque<List<Resource>> stack, Resource node) {
-    if (!isHub(node) || !visitedHubs.contains(node)) {
+  private void populateStackAndMarkVisited(Resource node) {
+    if (!isHub(node) || !visitedHubs.containsKey(node)) {
       getNodeOutputs(node).forEach(r -> stack.push(List.of(node, r)));
-      visitedHubs.add(node);
+      if (isHub(node)) {
+        visitedHubs.put(node, createAndInitExecution(node));
+      }
     }
   }
 
