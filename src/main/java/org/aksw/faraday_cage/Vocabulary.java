@@ -1,8 +1,6 @@
 package org.aksw.faraday_cage;
 
-import org.apache.jena.rdf.model.Property;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.ResourceFactory;
+import org.apache.jena.rdf.model.*;
 
 /**
  *
@@ -10,6 +8,8 @@ import org.apache.jena.rdf.model.ResourceFactory;
  *
  */
 public class Vocabulary {
+
+  private static Model vocabModel = ModelFactory.createDefaultModel();
 
   private static String uri = "http://aksw.org/faraday_cage/#";
 
@@ -25,20 +25,36 @@ public class Vocabulary {
     return property("hasOutput");
   }
 
-  public static Property property(String name) {
-    return ResourceFactory.createProperty(getURI() + name);
+  public static Property property(String s) {
+    if (s.contains("http://") ||
+        s.contains("https://") ||
+        s.contains(":") && vocabModel.getNsPrefixMap()
+      .containsKey(s.substring(0, s.indexOf(":")))) {
+      return vocabModel.createProperty(s);
+    }
+    return vocabModel.createProperty(getURI() + s);
   }
 
-  public static Resource resource(String local) {
-    return ResourceFactory.createResource(getURI() + local);
+  public static Resource resource(String s) {
+    if (s.contains("http://") ||
+      s.contains("https://") ||
+      s.contains(":") && vocabModel.getNsPrefixMap()
+        .containsKey(s.substring(0, s.indexOf(":")))) {
+      return vocabModel.createResource(s);
+    }
+    return vocabModel.createResource(getURI() + s);
   }
 
   public static String getURI() {
     return Vocabulary.uri;
   }
 
-  public static void setURI(String uri) {
+  public static void setDefaultURI(String uri) {
     Vocabulary.uri = uri;
+  }
+
+  public static void addNSPrefix(String prefix, String expansion) {
+    vocabModel.setNsPrefix(prefix, expansion);
   }
 
 }
