@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<svg width="280" height="220" viewBox="0 0 250 200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <pattern id="basicPattern" x="0" y="0" width="10" height="10" patternUnits="userSpaceOnUse">
+      <circle cx="5" cy="5" r="2" fill="#30af8e" id="svg_3" fill-opacity="0.4"/>
+    </pattern>
+    <pattern id="basicPattern2" x="0" y="2.5" width="10" height="125" patternUnits="userSpaceOnUse">
+      <line id="svg_5" y2="200" x2="0" y1="0" x1="0" fill="none" stroke="#666" stroke-opacity="0.4"/>
+    </pattern>
+    <pattern id="basicPattern3" x="52.5" y="0" width="150" height="10" patternUnits="userSpaceOnUse">
+      <line id="svg_5" y2="0" x2="200" y1="0" x1="0" fill="none" stroke="#666" stroke-opacity="0.4"/>
+    </pattern>
+  </defs>
+
+  <g transform="skewX(3) rotate(0 101.5 101.5)">
+    <title>Layer 1</title>
+    <rect x="59" y="10" width="133" height="131" fill="url(#basicPattern2)" id="svg_8"/>
+    <rect x="60" y="9" width="131" height="133" fill="url(#basicPattern3)" id="svg_8"/>
+    <rect x="62.5" y="12.5" width="125" height="125" fill="url(#basicPattern)" id="svg_8"/>
+  </g>
+
+
+  <g transform="skewX(2) rotate(2 51.5 151.5) ">
+  <title>Layer 1</title>
+    <rect x="59" y="10" width="133" height="131" fill="url(#basicPattern2)" id="svg_8"/>
+    <rect x="60" y="9" width="131" height="133" fill="url(#basicPattern3)" id="svg_8"/>
+  <rect x="62.5" y="12.5" width="125" height="125" fill="url(#basicPattern)" id="svg_8"/>
+</g>
+
+  <g transform="skewX(1) rotate(-2 51.5 151.5)">
+    <title>Layer 1</title>
+    <rect x="59" y="10" width="133" height="131" fill="url(#basicPattern2)" id="svg_8"/>
+    <rect x="60" y="9" width="131" height="133" fill="url(#basicPattern3)" id="svg_8"/>
+    <rect x="62.5" y="12.5" width="125" height="125" fill="url(#basicPattern)" id="svg_8"/>
+  </g>
+
+  <text style="cursor: move;" fill="#222" stroke-width="3" x="38.5" y="188" id="svg_1" font-size="24" font-family="'Courier New', Courier, monospace" text-anchor="start" xml:space="preserve">FARADAY-CAGE</text>
+</svg>
