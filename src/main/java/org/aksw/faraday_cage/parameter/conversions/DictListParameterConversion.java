@@ -69,13 +69,10 @@ public class DictListParameterConversion implements ParameterConversion {
         RDFNode pValue = null;
         if (r.hasProperty(p)) {
           pValue = r.getProperty(p).getObject();
-          switch (force) {
-            case RESOURCE:
-              pValue = pValue.asResource();
-              break;
-            case LITERAL:
-              pValue = pValue.asLiteral();
-              break;
+          if (force == RESOURCE) {
+            pValue = pValue.asResource();
+          } else if (force == LITERAL) {
+            pValue = pValue.asLiteral();
           }
         }
           nodeMap.put(p, pValue);

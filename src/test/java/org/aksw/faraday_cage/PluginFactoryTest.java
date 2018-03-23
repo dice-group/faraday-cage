@@ -18,7 +18,7 @@ public class PluginFactoryTest {
   public static class TestPlugin implements TestPluginType {
     @Override
     public void init(@NotNull Resource id) {
-
+      System.out.println(id.getURI());
     }
 
     @NotNull
