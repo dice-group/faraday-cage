@@ -10,9 +10,9 @@ import java.util.List;
  *
  *
  */
-public interface IdentifiableExecutionFactory<T> {
+public interface ExecutionFactory<T> {
 
-  IdentifiableExecution<T> create(Resource id);
+  Execution<T> create(Resource id);
 
   List<Resource> listAvailable();
 

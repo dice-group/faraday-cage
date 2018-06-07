@@ -9,7 +9,7 @@ import org.pf4j.ExtensionPoint;
  *
  *
  */
-public interface Plugin<T> extends ExtensionPoint, IdentifiableExecution<T> {
+public interface Plugin<T> extends ExtensionPoint, Execution<T> {
 
   static Resource getImplementationType(Resource executionId) {
     Resource implementation = executionId.getPropertyResourceValue(Vocabulary.implementedIn());
@@ -37,4 +37,9 @@ public interface Plugin<T> extends ExtensionPoint, IdentifiableExecution<T> {
   void init(@NotNull Resource id);
 
 
+  /**
+   * Get initialization status
+   * @return  {@code true}, if initialized; {@code false}, else.
+   */
+  boolean isInitialized();
 }

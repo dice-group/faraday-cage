@@ -29,6 +29,7 @@ public class DefaultExecutionGraphBuilder<T> implements ExecutionGraphBuilder<T>
   private CompletableFutureFactory completableFutureFactory;
   private CompletableFuture<T> trigger;
   private CompletableFuture<T> joiner;
+  private Analytics analytics = new Analytics();
 
   private class Pipeline implements Function<T, CompletableFuture<T>> {
     private CompletableFuture<T> trigger = completableFutureFactory.getInstance();
@@ -40,8 +41,13 @@ public class DefaultExecutionGraphBuilder<T> implements ExecutionGraphBuilder<T>
       this.callBack = fn;
     }
 
-    void chain(IdentifiableExecution<T> fn) {
-      this.result = result.thenApply(fn::apply);
+    void chain(Execution<T> fn) {
+      this.result = result.thenApply(t -> {
+        logger.info("{} executes", fn.getId().toString());
+        T result = fn.apply(t);
+        analytics.gatherFrom(fn);
+        return result;
+      });
     }
 
     /**
@@ -84,9 +90,9 @@ public class DefaultExecutionGraphBuilder<T> implements ExecutionGraphBuilder<T>
     private int outCount = 0;
     private int inCount = 0;
     private boolean firstOut = true;
-    private IdentifiableExecution<T> hubExecution;
+    private Execution<T> hubExecution;
 
-    private Hub(IdentifiableExecution<T> hubExecution) {
+    private Hub(Execution<T> hubExecution) {
       this.hubExecution = hubExecution;
     }
 
@@ -131,7 +137,9 @@ public class DefaultExecutionGraphBuilder<T> implements ExecutionGraphBuilder<T>
      * outgoing {@code ExecutionPipeline}s.
      */
     CompletableFuture<T> execute() {
+      logger.info("{} executes", hubExecution.getId().toString());
       this.outDates = hubExecution.apply(inDates);
+      analytics.gatherFrom(hubExecution);
       if (outDates.size() != outCount) {
         throw new RuntimeException(
           "Unexpected number of generated output data from Plugin " + hubExecution.getId()
@@ -153,7 +161,7 @@ public class DefaultExecutionGraphBuilder<T> implements ExecutionGraphBuilder<T>
 
   @NotNull
   @Override
-  public ExecutionGraphBuilder addStart(@NotNull IdentifiableExecution<T> execution) {
+  public ExecutionGraphBuilder addStart(@NotNull Execution<T> execution) {
     currentPipe = new Pipeline();
     currentPipe.chain(execution);
     startPipelines.add(currentPipe);
@@ -162,7 +170,7 @@ public class DefaultExecutionGraphBuilder<T> implements ExecutionGraphBuilder<T>
 
   @NotNull
   @Override
-  public ExecutionGraphBuilder addStartHub(@NotNull IdentifiableExecution<T> hubExecution) {
+  public ExecutionGraphBuilder addStartHub(@NotNull Execution<T> hubExecution) {
     Hub hub = new Hub(hubExecution);
     hubs.put(hubExecution.getId(), hub);
     startHubs.add(hub);
@@ -171,13 +179,13 @@ public class DefaultExecutionGraphBuilder<T> implements ExecutionGraphBuilder<T>
 
   @NotNull
   @Override
-  public ExecutionGraphBuilder chain(@NotNull IdentifiableExecution<T> execution) {
+  public ExecutionGraphBuilder chain(@NotNull Execution<T> execution) {
     currentPipe.chain(execution);
     return this;
   }
 
   @Override
-  public ExecutionGraphBuilder chainIntoHub(@NotNull IdentifiableExecution<T> to, int toPort) {
+  public ExecutionGraphBuilder chainIntoHub(@NotNull Execution<T> to, int toPort) {
     if (!hubs.containsKey(to.getId())){
       hubs.put(to.getId(), new Hub(to));
     }
@@ -187,7 +195,7 @@ public class DefaultExecutionGraphBuilder<T> implements ExecutionGraphBuilder<T>
   }
 
   @Override
-  public ExecutionGraphBuilder chainFromHub(@NotNull IdentifiableExecution<T> from, int fromPort, @NotNull IdentifiableExecution<T> execution) {
+  public ExecutionGraphBuilder chainFromHub(@NotNull Execution<T> from, int fromPort, @NotNull Execution<T> execution) {
     if (!hubs.containsKey(from.getId())){
       throw new IllegalStateException("Hub needs to be declared before outgoing connections can be made");
     }
@@ -199,7 +207,7 @@ public class DefaultExecutionGraphBuilder<T> implements ExecutionGraphBuilder<T>
 
   @NotNull
   @Override
-  public ExecutionGraphBuilder chainFromHubToHub(@NotNull IdentifiableExecution<T> from, int fromPort, @NotNull IdentifiableExecution<T> to, int toPort) {
+  public ExecutionGraphBuilder chainFromHubToHub(@NotNull Execution<T> from, int fromPort, @NotNull Execution<T> to, int toPort) {
     if (!hubs.containsKey(from.getId())){
       throw new IllegalStateException("Hub needs to be declared before outgoing connections can be made");
     }
@@ -227,7 +235,7 @@ public class DefaultExecutionGraphBuilder<T> implements ExecutionGraphBuilder<T>
       .map(hub -> trigger.thenComposeAsync(($ -> hub.execute())))
       .forEach(addToJoiner);
 
-    return () -> {
+    return new ExecutionGraph(() -> {
       trigger.complete(null);
       joiner.join();
       if (joiner.isCompletedExceptionally()) {
@@ -237,7 +245,7 @@ public class DefaultExecutionGraphBuilder<T> implements ExecutionGraphBuilder<T>
           throw new RuntimeException(e.getCause());
         }
       }
-    };
+    }, analytics);
   }
 
 

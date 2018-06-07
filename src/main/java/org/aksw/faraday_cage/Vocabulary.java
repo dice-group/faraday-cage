@@ -25,6 +25,10 @@ public class Vocabulary {
     return property("hasOutput");
   }
 
+  public static Property toNode() { return property("toNode"); }
+
+  public static Property toPort() { return property("toPort"); }
+
   public static Property property(String s) {
     if (s.contains("http://") ||
         s.contains("https://") ||

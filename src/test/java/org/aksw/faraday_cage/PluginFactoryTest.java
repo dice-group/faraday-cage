@@ -21,6 +21,11 @@ public class PluginFactoryTest {
       System.out.println(id.getURI());
     }
 
+    @Override
+    public boolean isInitialized() {
+      return true;
+    }
+
     @NotNull
     @Override
     public Resource getId() {

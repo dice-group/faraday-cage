@@ -1,8 +1,10 @@
 package org.aksw.faraday_cage.nodes;
 
+import org.aksw.faraday_cage.AnalyticsFrame;
 import org.apache.jena.rdf.model.Resource;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -12,10 +14,13 @@ import java.util.List;
  */
 public abstract class AbstractNode<T> implements Node<T> {
 
+
   private int inDegree = -1;
   private int outDegree = -1;
   private Resource id = null;
   private boolean useImplicitCloning = false;
+  private AnalyticsFrame analyticsFrame = new DefaultAnalyticsFrame();
+
 
   public static abstract class WithImplicitCloning<T> extends AbstractNode<T> {
 
@@ -74,7 +79,11 @@ public abstract class AbstractNode<T> implements Node<T> {
     if (!isInitialized()) {
       throw new RuntimeException(this.getClass().getCanonicalName() + " must be initialized before calling apply()!");
     }
-    List<T> result = safeApply(data);
+    writeInputAnalytics(data);
+    long runTime = System.currentTimeMillis();
+    List<T> result = new ArrayList<>(safeApply(data));
+    writeAnalytics("run time", (System.currentTimeMillis() - runTime) + "ms");
+    writeOutputAnalytics(data);
     // implicit cloning implemented here
     if (useImplicitCloning
       && outDegree > result.size() && result.size() == 1 && getDegreeBounds().maxOut() == 1) {
@@ -96,6 +105,23 @@ public abstract class AbstractNode<T> implements Node<T> {
 
   final void useImplicitCloning(boolean useImplicitCloning) {
     this.useImplicitCloning = useImplicitCloning;
+  }
+
+  @Override
+  final public AnalyticsFrame gatherAnalytics() {
+    return analyticsFrame;
+  }
+
+  final protected void writeAnalytics(String name, String information) {
+    analyticsFrame.put(name, information);
+  }
+
+  protected void writeInputAnalytics(List<T> data) {
+
+  }
+
+  protected void writeOutputAnalytics(List<T> data) {
+
   }
 
 }

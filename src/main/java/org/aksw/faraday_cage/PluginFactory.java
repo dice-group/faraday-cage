@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
  * <p>
  * Create an instance of this
  */
-public class PluginFactory<V extends Plugin<T>, T> implements IdentifiableExecutionFactory<T> {
+public class PluginFactory<V extends Plugin<T>, T> implements ExecutionFactory<T> {
 
   /**
    * pf4j plugin manager

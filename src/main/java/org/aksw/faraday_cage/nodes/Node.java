@@ -69,10 +69,4 @@ public interface Node<T> extends Plugin<T> {
 
   void init(@NotNull Resource id, int inDegree, int outDegree);
 
-  /**
-   * Get initialization status
-   * @return  {@code true}, if initialized; {@code false}, else.
-   */
-  boolean isInitialized();
-
 }

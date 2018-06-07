@@ -1,6 +1,10 @@
 package org.aksw.faraday_cage;
 
 
+import org.aksw.faraday_cage.nodes.DefaultAnalyticsFrame;
+import org.apache.jena.rdf.model.Resource;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 import java.util.function.UnaryOperator;
 
@@ -25,6 +29,13 @@ public interface Execution<T> {
   T apply(T data);
 
   List<T> apply(List<T> data);
+
+  default AnalyticsFrame gatherAnalytics() {
+    return new DefaultAnalyticsFrame();
+  }
+
+  @NotNull Resource getId();
+
 
 
 }
