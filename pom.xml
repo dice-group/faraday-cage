@@ -4,7 +4,7 @@
 
   <groupId>org.aksw.faraday_cage</groupId>
   <artifactId>faraday-cage</artifactId>
-  <version>0.1.0</version>
+  <version>0.1.1-SNAPSHOT</version>
 
   <name>FARADAY-CAGE</name>
   <description>Framework for acyclic directed graphs yielding parallel computations of great efficiency</description>
@@ -14,7 +14,7 @@
   <scm>
     <url>https://github.com/dice-group/faraday-cage</url>
     <connection>scm:git:https://github.com/dice-group/faraday-cage.git</connection>
-    <tag>0.1.0</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <properties>
