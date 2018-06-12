@@ -57,6 +57,10 @@ public interface Node<T> extends Plugin<T> {
       return maxOut;
     }
 
+    public String toString() {
+      return minIn + " <= in <= " + maxIn + "; " + minOut + " <= out <= " + maxOut;
+    }
+
   }
 
   default DegreeBounds getDegreeBounds() {
