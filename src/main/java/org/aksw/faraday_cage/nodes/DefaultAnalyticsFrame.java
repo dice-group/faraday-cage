@@ -2,7 +2,7 @@ package org.aksw.faraday_cage.nodes;
 
 import org.aksw.faraday_cage.AnalyticsFrame;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -12,7 +12,7 @@ import java.util.Map;
  */
 public class DefaultAnalyticsFrame implements AnalyticsFrame {
 
-  private Map<String, String> entryMap = new HashMap<>();
+  private Map<String, String> entryMap = new LinkedHashMap<>();
 
   @Override
   public void put(String name, String information) {
@@ -39,6 +39,7 @@ public class DefaultAnalyticsFrame implements AnalyticsFrame {
         sb.append(" ");
       }
       sb.append(information);
+      sb.append("\n");
     });
     return sb.toString();
   }

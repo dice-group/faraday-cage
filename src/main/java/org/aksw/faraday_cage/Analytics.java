@@ -2,7 +2,7 @@ package org.aksw.faraday_cage;
 
 import org.apache.jena.rdf.model.Resource;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -12,7 +12,7 @@ import java.util.Map;
  */
 public class Analytics {
 
-  private Map<Resource, AnalyticsFrame> frames = new HashMap<>();
+  private Map<Resource, AnalyticsFrame> frames = new LinkedHashMap<>();
 
   public void gatherFrom(Execution Execution) {
     frames.put(Execution.getId(), Execution.gatherAnalytics());

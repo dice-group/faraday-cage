@@ -44,7 +44,8 @@ public abstract class AbstractNode<T> implements Node<T> {
   public final void init(@NotNull Resource id, int inDegree, int outDegree) {
     init(id);
     if (getDegreeBounds().notSatisfiedBy(inDegree, outDegree, useImplicitCloning)) {
-      throw new RuntimeException("Invalid in/out degree of node " + id);
+      throw new RuntimeException("Invalid in/out degree (" + inDegree + "/" + outDegree +
+        ") of node " + id + ", should be " + getDegreeBounds());
     } else {
       this.inDegree = inDegree;
       this.outDegree = outDegree;
@@ -83,7 +84,7 @@ public abstract class AbstractNode<T> implements Node<T> {
     long runTime = System.currentTimeMillis();
     List<T> result = new ArrayList<>(safeApply(data));
     writeAnalytics("run time", (System.currentTimeMillis() - runTime) + "ms");
-    writeOutputAnalytics(data);
+    writeOutputAnalytics(result);
     // implicit cloning implemented here
     if (useImplicitCloning
       && outDegree > result.size() && result.size() == 1 && getDegreeBounds().maxOut() == 1) {
