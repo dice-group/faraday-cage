@@ -1,0 +1,17 @@
+@prefix : <urn:example:test_configurations/cyclic.ttl#> .
+@prefix fcage: <http://w3id.org/fcage/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+#fcage:TestExecutionNode rdfs:subClassOf fcage:ExecutionNode .
+
+:ex1
+  a fcage:TestExecutionNode ;
+  fcage:hasOutput :ex2 .
+
+:ex2
+  a fcage:TestExecutionNode ;
+  fcage:hasOutput :ex3 .
+
+:ex3
+  a fcage:TestExecutionNode ;
+  fcage:hasOutput :ex2 .

@@ -1,0 +1,72 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix sh: <http://www.w3.org/ns/shacl#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix ex: <http://example.com/ns#> .
+@prefix deer: <http://w3id.org/deer/> .
+
+deer:ExNodeShape
+  a sh:NodeShape ;
+  sh:targetClass deer:ExNode ;
+  sh:xone ( # ExNodes may either have output definitions in the following shape or no output at all (see [X])
+    [
+      sh:property [ sh:path deer:hasOutput ; sh:maxCount 1 ; sh:minCount 1 ] ; # exactly one output
+      sh:xone (  # ExNodes may be connected in three possible ways:
+        [ sh:property deer:ExNodeShape_hasOutput_single ] # 1. output-only single-implicit,
+        [ sh:property deer:ExNodeShape_hasOutput_list ] # 2. output-list port-implicit,
+        [ sh:property deer:ExNodeShape_hasOutput_explicit ] # 3. output-only port-explicit
+      )
+    ]
+    [ sh:property [ sh:path deer:hasOutput ; sh:maxCount 0 ] ] # [X]: exactly no output
+  ) ;
+  sh:property deer:ExNodeShape_hasInput , #
+              deer:ExNodeShape_hasInput_list .
+
+deer:ExNodeShape_hasOutput_single
+  sh:minCount 1 ;
+  sh:maxCount 1 ;
+  sh:path deer:hasOutput ;
+  sh:class deer:ExNode .
+
+deer:ExNodeShape_hasOutput_list
+  sh:minCount 1 ;
+  sh:path ( deer:hasOutput [ sh:zeroOrMorePath rdf:rest ] rdf:first ) ;
+  sh:class deer:ExNode .
+
+deer:ExNodeShape_hasOutput_explicit
+  sh:minCount 1 ;
+  sh:path ( deer:hasOutput [ sh:zeroOrMorePath rdf:rest ] rdf:first ) ;
+  sh:node [
+    a sh:NodeShape ;
+    sh:property [ sh:path deer:toPort ; sh:datatype xsd:integer ; sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path deer:toNode ; sh:class deer:ExNode ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  ] .
+
+deer:ExNodeShape_hasInput
+  sh:maxCount 1 ;
+  sh:path deer:hasInput .
+
+deer:ExNodeShape_hasInput_list
+  sh:path ( deer:hasInput [ sh:zeroOrMorePath rdf:rest ] rdf:first ) ;
+  sh:class deer:ExNode .
+
+# Node FileModelReader
+
+deer:FileModelReaderShape
+	a sh:NodeShape ;
+	sh:targetClass deer:FileModelReader ;
+	sh:xone (
+	[ sh:property deer:FileModelReaderShape_fromUri ]
+	[ sh:property deer:FileModelReaderShape_fromPath ] ) .
+
+deer:FileModelReaderShape_fromUri
+  sh:path deer:fromUri ;
+  sh:minCount 1 ;
+  sh:maxCount 1 ;
+  sh:nodeKind sh:IRI .
+
+deer:FileModelReaderShape_fromPath
+  sh:path deer:fromPath ;
+  sh:minCount 1 ;
+  sh:maxCount 1 ;
+  sh:datatype xsd:string .
