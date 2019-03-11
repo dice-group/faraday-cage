@@ -4,24 +4,32 @@
 
 ## About this Documentation {#about}
 
-This documentation aims to be a comprehensive guide to FARADAY-CAGE.
-It is subdivided into three parts:
- 
-1. Getting started
-2. Writing configuration files
-3. Extending FARADAY-CAGE
-
+This documentation aims to be a comprehensive guide to **FARADAY-CAGE**.
 If you believe a part of it to be inaccurate or outdated, please
-[file an issue](https://github.com/faraday-cage/deer/issues/new).
+[file an issue](https://github.com/dice-group/faraday-cage/issues/new).
 
-## What is FARADAY-CAGE? {#what}
+## Overview {#overview}
 
 **FARADAY-CAGE** is the **F**r**a**mework fo**r** **A**cyclic **D**irected Graphs **Y**ielding
-Parallel **C**omput**a**tions of **G**reat **E**fficiency. It originated from the execution engine
-of the redesigned [DEER](https://github.com/dice-group/deer) and has now been outsourced into a
-project of its own to evaluate the possibility of also using it for other projects.
+Parallel **C**omput**a**tions of **G**reat **E**fficiency. 🤖  
+It enables your projects to use a RDF configuration driven execution engine that can handle
+any homogenous [DAG](https://en.wikipedia.org/wiki/Directed_acyclic_graph)-shaped data flow.
 
-FARADAY-CAGE enable your projects to use a RDF configuration driven execution engine that can handle
-any data flow that is shaped as a [DAG](https://en.wikipedia.org/wiki/Directed_acyclic_graph).
-You just need to extend a couple of abstract classes to tailor-fit FARADAY-CAGE to your application
-domain.
+**Your requirements:**
+* Data processing application on the JVM with atomic operations which can be arbitrarily arranged as a DAG  
+* Homogenous data flow, i.e. all data passed between atomic operations has the same type
+
+**Our offering:**
+* Automated validation of application configurations using [W3C Recommendation Shapes Constraint Language (SHACL)](https://www.w3.org/TR/shacl/#DatatypeConstraintComponent)
+  * Skip the validation boilerplate in your implementations, instead spend time optimizing your business logic.
+  * Use generic web frontends for user friendly configuration building and management with no additional work required  
+* Parsing your RDF configuration file, generating a fully parallelized execution graph 
+* Additional API for execution graph manipulation
+* Supporting the development of plugins for your application utilizing [PF4J](https://pf4j.org)
+ 
+**All you have to do:**
+* Specify validation graphs for your atomic operations configuration using the SHACL vocabulary
+* Extend our abstract classes and implement *highly configurable* atomic operations for your application domain, skipping validation boilerplate
+* Call a few methods on our convenience facade class [`FaradayCageContext`](https://dice-group.github.io/faraday-cage/javadoc/org/aksw/faraday_cage/engine/FaradayCageContext.html)
+* Write some documentation for your users
+* *Lean back*

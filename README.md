@@ -15,10 +15,6 @@ any data flow that is shaped as a [DAG](https://en.wikipedia.org/wiki/Directed_a
 You just need to extend a couple of abstract classes to tailor-fit FARADAY-CAGE to your application
 domain.
 
-## Experimental Warning
-
-FARADAY-CAGE is in an early development stage (v0.x.y), where API can and will change frequently.
-
 ## Documentation
 
 Will be made available with the first stable release.

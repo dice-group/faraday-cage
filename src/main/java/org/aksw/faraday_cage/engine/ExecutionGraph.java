@@ -17,15 +17,15 @@ public class ExecutionGraph<T> {
 
   private static final Logger logger = LoggerFactory.getLogger(ExecutionGraph.class);
 
-  private Map<ExecutionGraphNode<T>, List<Edge<T>>> edges = new HashMap<>();
+  private Map<ExecutionNode<T>, List<Edge<T>>> edges = new HashMap<>();
 
   static class Edge<T> {
 
     private int fromPort;
     private int toPort;
-    private ExecutionGraphNode<T> toNode;
+    private ExecutionNode<T> toNode;
 
-    Edge(int fromPort, int toPort, ExecutionGraphNode<T> toNode) {
+    Edge(int fromPort, int toPort, ExecutionNode<T> toNode) {
       this.fromPort = fromPort;
       this.toPort = toPort;
       this.toNode = toNode;
@@ -39,7 +39,7 @@ public class ExecutionGraph<T> {
       return toPort;
     }
 
-    ExecutionGraphNode<T> getToNode() {
+    ExecutionNode<T> getToNode() {
       return toNode;
     }
   }
@@ -48,7 +48,7 @@ public class ExecutionGraph<T> {
     
   }
 
-  public ExecutionGraph addEdge(ExecutionGraphNode<T> from, int fromPort, ExecutionGraphNode<T> to, int toPort) {
+  public ExecutionGraph addEdge(ExecutionNode<T> from, int fromPort, ExecutionNode<T> to, int toPort) {
     if (!edges.containsKey(from)) {
       edges.put(from, new ArrayList<>());
     }

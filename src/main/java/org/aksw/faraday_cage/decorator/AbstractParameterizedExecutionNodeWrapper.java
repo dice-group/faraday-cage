@@ -1,13 +1,13 @@
 package org.aksw.faraday_cage.decorator;
 
-import org.aksw.faraday_cage.engine.ExecutionGraphNode;
+import org.aksw.faraday_cage.engine.ExecutionNode;
 import org.aksw.faraday_cage.engine.Parameterized;
 import org.aksw.faraday_cage.engine.ValidatableParameterMap;
 
 /**
  *
  */
-public abstract class AbstractParameterizedExecutionGraphNodeWrapper<V extends ExecutionGraphNode<T>, T> extends AbstractExecutionGraphNodeWrapper<V, T> implements Parameterized {
+public abstract class AbstractParameterizedExecutionNodeWrapper<V extends ExecutionNode<T>, T> extends AbstractExecutionNodeWrapper<V, T> implements Parameterized {
 
   private ValidatableParameterMap parameterMap = null;
 

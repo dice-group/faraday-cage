@@ -22,11 +22,11 @@ public class ExecutionGraphCompilerTest {
 
   @Test
   public void cyclicExecutionGraphsShouldThrowException() {
-    TestExecutionGraphNode ex1 = new TestExecutionGraphNode();
+    TestExecutionNode ex1 = new TestExecutionNode();
     ex1.initPluginId(createResource("ex1"));
-    TestExecutionGraphNode ex2 = new TestExecutionGraphNode();
+    TestExecutionNode ex2 = new TestExecutionNode();
     ex2.initPluginId(createResource("ex2"));
-    TestExecutionGraphNode ex3 = new TestExecutionGraphNode();
+    TestExecutionNode ex3 = new TestExecutionNode();
     ex3.initPluginId(createResource("ex3"));
     ExecutionGraph<String> executionGraph = new ExecutionGraph<>();
     executionGraph.addEdge(ex1, 0, ex2, 0);
@@ -37,8 +37,8 @@ public class ExecutionGraphCompilerTest {
 
   @Test
   public void rootlessExecutionGraphsShouldThrowException() {
-    TestExecutionGraphNode ex1 = new TestExecutionGraphNode();
-    TestExecutionGraphNode ex2 = new TestExecutionGraphNode();
+    TestExecutionNode ex1 = new TestExecutionNode();
+    TestExecutionNode ex2 = new TestExecutionNode();
     ExecutionGraph<String> executionGraph = new ExecutionGraph<>();
     executionGraph.addEdge(ex1, 0, ex2, 0);
     executionGraph.addEdge(ex2, 0, ex1, 0);

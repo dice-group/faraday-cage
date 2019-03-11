@@ -11,14 +11,14 @@ import java.util.List;
  *
  *
  */
-public abstract class AbstractExecutionGraphNode<T> implements ExecutionGraphNode<T> {
+public abstract class AbstractExecutionNode<T> implements ExecutionNode<T> {
 
   private int inDegree = -1;
   private int outDegree = -1;
   private Resource id = null;
   private boolean useImplicitCloning = false;
 
-  public static abstract class WithImplicitCloning<T> extends AbstractExecutionGraphNode<T> {
+  public static abstract class WithImplicitCloning<T> extends AbstractExecutionNode<T> {
 
     public WithImplicitCloning() {
       this.useImplicitCloning(true);

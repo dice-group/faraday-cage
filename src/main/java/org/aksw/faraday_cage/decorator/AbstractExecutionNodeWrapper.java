@@ -1,13 +1,13 @@
 package org.aksw.faraday_cage.decorator;
 
-import org.aksw.faraday_cage.engine.ExecutionGraphNode;
+import org.aksw.faraday_cage.engine.ExecutionNode;
 import org.apache.jena.rdf.model.Resource;
 import org.jetbrains.annotations.NotNull;
 
 /**
  *
  */
-public abstract class AbstractExecutionGraphNodeWrapper<V extends ExecutionGraphNode<T>, T> implements ExecutionNodeWrapper<V, T> {
+public abstract class AbstractExecutionNodeWrapper<V extends ExecutionNode<T>, T> implements ExecutionNodeWrapper<V, T> {
 
   private Resource id = null;
 

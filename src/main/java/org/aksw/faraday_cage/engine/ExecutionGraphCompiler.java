@@ -21,12 +21,12 @@ class ExecutionGraphCompiler<T> {
 
   private static final Logger logger = LoggerFactory.getLogger(ExecutionGraphCompiler.class);
 
-  private final Set<ExecutionGraphNode<T>> visitedHubs = new HashSet<>();
+  private final Set<ExecutionNode<T>> visitedHubs = new HashSet<>();
   private final List<ExecutionPipeline> startPipelines = new ArrayList<>();
   private final List<ExecutionHub> startHubs = new ArrayList<>();
-  private final Map<ExecutionGraphNode<T>, ExecutionHub> hubs = new HashMap<>();
-  private final Map<ExecutionGraphNode<T>, List<ExecutionGraph.Edge<T>>> edges;
-  private final Map<ExecutionGraphNode<T>, int[]> degrees;
+  private final Map<ExecutionNode<T>, ExecutionHub> hubs = new HashMap<>();
+  private final Map<ExecutionNode<T>, List<ExecutionGraph.Edge<T>>> edges;
+  private final Map<ExecutionNode<T>, int[]> degrees;
   private ExecutionPipeline currentPipe;
   private CompletableFuture<T> joiner;
 
@@ -45,7 +45,7 @@ class ExecutionGraphCompiler<T> {
       this.callBack = fn;
     }
 
-    void chain(ExecutionGraphNode<T> fn) {
+    void chain(ExecutionNode<T> fn) {
       this.result = result.thenApply(t -> {
         logger.info("{} executes", fn.getId().toString());
         List<T> result = fn.apply(t == null ? List.of() : List.of(t));
@@ -97,10 +97,10 @@ class ExecutionGraphCompiler<T> {
     private int outCount = 0;
     private int inCount = 0;
     private boolean firstOut = true;
-    private ExecutionGraphNode<T> hubExecutionGraphNode;
+    private ExecutionNode<T> hubExecutionNode;
 
-    private ExecutionHub(ExecutionGraphNode<T> hubExecutionGraphNode) {
-      this.hubExecutionGraphNode = hubExecutionGraphNode;
+    private ExecutionHub(ExecutionNode<T> hubExecutionNode) {
+      this.hubExecutionNode = hubExecutionNode;
     }
 
     void addIn(ExecutionPipeline in, int inIndex) {
@@ -146,11 +146,11 @@ class ExecutionGraphCompiler<T> {
      * outgoing {@code ExecutionPipeline}s.
      */
     CompletableFuture<T> execute() {
-      logger.info("{} executes", hubExecutionGraphNode.getId().toString());
-      this.outDates = hubExecutionGraphNode.apply(inDates);
+      logger.info("{} executes", hubExecutionNode.getId().toString());
+      this.outDates = hubExecutionNode.apply(inDates);
       if (outDates.size() != outCount) {
         throw new RuntimeException(
-          "Unexpected number of generated output data from ExecutionNode " + hubExecutionGraphNode.getId()
+          "Unexpected number of generated output data from ExecutionNode " + hubExecutionNode.getId()
             + "(Expected: " + outCount + ", Actual: " + outDates.size() + ")");
       }
       trigger.complete(null);
@@ -161,7 +161,7 @@ class ExecutionGraphCompiler<T> {
   }
 
   private void validateEdges() {
-    BiConsumer<HashMap<ExecutionGraphNode<T>, SortedSet<Integer>>, String> checkPortNumbers = (ports, dir) -> ports.forEach((k, v) -> {
+    BiConsumer<HashMap<ExecutionNode<T>, SortedSet<Integer>>, String> checkPortNumbers = (ports, dir) -> ports.forEach((k, v) -> {
       int j = -1;
       for (Integer i : v) {
         if (i != ++j) {
@@ -169,14 +169,14 @@ class ExecutionGraphCompiler<T> {
         }
       }
     });
-    HashMap<ExecutionGraphNode<T>, SortedSet<Integer>> outPorts = new HashMap<>();
+    HashMap<ExecutionNode<T>, SortedSet<Integer>> outPorts = new HashMap<>();
     edges.forEach((key, value) -> value.forEach(c -> {
       SortedSet<Integer> set = (outPorts.containsKey(key)) ? outPorts.get(key) : new TreeSet<>();
       set.add(c.getFromPort());
       outPorts.put(key, set);
     }));
     checkPortNumbers.accept(outPorts, "out");
-    HashMap<ExecutionGraphNode<T>, SortedSet<Integer>> inPorts = new HashMap<>();
+    HashMap<ExecutionNode<T>, SortedSet<Integer>> inPorts = new HashMap<>();
     edges.values().stream()
       .flatMap(Collection::stream)
       .forEach(c -> {
@@ -187,7 +187,7 @@ class ExecutionGraphCompiler<T> {
     checkPortNumbers.accept(inPorts, "in");
   }
 
-  ExecutionGraphCompiler(Map<ExecutionGraphNode<T>, List<ExecutionGraph.Edge<T>>> edges) {
+  ExecutionGraphCompiler(Map<ExecutionNode<T>, List<ExecutionGraph.Edge<T>>> edges) {
     this.edges = edges;
     validateEdges();
     this.degrees = getDegrees();
@@ -195,8 +195,8 @@ class ExecutionGraphCompiler<T> {
     this.currentPipe = new ExecutionPipeline();
   }
 
-  private Map<ExecutionGraphNode<T>, int[]> getDegrees() {
-    Map<ExecutionGraphNode<T>, int[]> degrees = new HashMap<>();
+  private Map<ExecutionNode<T>, int[]> getDegrees() {
+    Map<ExecutionNode<T>, int[]> degrees = new HashMap<>();
     // counting out degree is trivial
     edges.forEach((key, value) -> degrees.put(key, new int[]{0, value.size()}));
     // counting in degree is harder
@@ -213,14 +213,14 @@ class ExecutionGraphCompiler<T> {
     return degrees;
   }
 
-  private void dfs(ExecutionGraph.Edge<T> edge, ExecutionGraphNode<T> parent, final Deque<ExecutionGraphNode<T>> recStack) {
-    final ExecutionGraphNode<T> node = edge.getToNode();
+  private void dfs(ExecutionGraph.Edge<T> edge, ExecutionNode<T> parent, final Deque<ExecutionNode<T>> recStack) {
+    final ExecutionNode<T> node = edge.getToNode();
     recStack.push(node);
     getEdges(node).forEach(next -> {
       if (recStack.contains(next.getToNode())) {
         throw new InvalidExecutionGraphException(
           "Cyclic Graph detected! Cycle in [" +
-          StreamSupport.stream(((Iterable<ExecutionGraphNode<T>>) recStack::descendingIterator).spliterator(), false)
+          StreamSupport.stream(((Iterable<ExecutionNode<T>>) recStack::descendingIterator).spliterator(), false)
             .dropWhile(r -> !next.getToNode().equals(r))
             .map(Plugin::getId)
             .map(ExecutionGraphCompiler::optionalShortFormOf)
@@ -261,46 +261,46 @@ class ExecutionGraphCompiler<T> {
     recStack.pop();
   }
 
-  private Set<ExecutionGraphNode<T>> getStartNodes() {
+  private Set<ExecutionNode<T>> getStartNodes() {
     return degrees.entrySet().stream()
       .filter(e -> e.getValue()[0] == 0)
       .map(Map.Entry::getKey)
       .collect(Collectors.toSet());
   }
 
-  private List<ExecutionGraph.Edge<T>> getEdges(ExecutionGraphNode<T> execution) {
+  private List<ExecutionGraph.Edge<T>> getEdges(ExecutionNode<T> execution) {
     return edges.getOrDefault(execution, Collections.emptyList());
   }
 
 
-  private boolean isHub(ExecutionGraphNode<T> execution) {
+  private boolean isHub(ExecutionNode<T> execution) {
     int[] d = degrees.get(execution);
     return d[0] > 1 || d[1] > 1;
   }
 
-  private ExecutionGraphNode<T> initDegrees(ExecutionGraphNode<T> execution) {
+  private ExecutionNode<T> initDegrees(ExecutionNode<T> execution) {
     int[] d = degrees.get(execution);
     execution.initDegrees(d[0], d[1]);
     return execution;
   }
 
-  private void addStart(@NotNull ExecutionGraphNode<T> executionGraphNode) {
+  private void addStart(@NotNull ExecutionNode<T> executionNode) {
     currentPipe = new ExecutionPipeline();
-    currentPipe.chain(executionGraphNode);
+    currentPipe.chain(executionNode);
     startPipelines.add(currentPipe);
   }
 
-  private void addStartHub(@NotNull ExecutionGraphNode<T> hubExecutionGraphNode) {
-    ExecutionHub hub = new ExecutionHub(hubExecutionGraphNode);
-    hubs.put(hubExecutionGraphNode, hub);
+  private void addStartHub(@NotNull ExecutionNode<T> hubExecutionNode) {
+    ExecutionHub hub = new ExecutionHub(hubExecutionNode);
+    hubs.put(hubExecutionNode, hub);
     startHubs.add(hub);
   }
 
-  private void chain(@NotNull ExecutionGraphNode<T> executionGraphNode) {
-    currentPipe.chain(executionGraphNode);
+  private void chain(@NotNull ExecutionNode<T> executionNode) {
+    currentPipe.chain(executionNode);
   }
 
-  private void chainIntoHub(@NotNull ExecutionGraphNode<T> to, int toPort) {
+  private void chainIntoHub(@NotNull ExecutionNode<T> to, int toPort) {
     if (!hubs.containsKey(to)) {
       hubs.put(to, new ExecutionHub(to));
     }
@@ -308,16 +308,16 @@ class ExecutionGraphCompiler<T> {
     currentPipe = new ExecutionPipeline();
   }
 
-  private void chainFromHub(@NotNull ExecutionGraphNode<T> from, int fromPort, @NotNull ExecutionGraphNode<T> executionGraphNode) {
+  private void chainFromHub(@NotNull ExecutionNode<T> from, int fromPort, @NotNull ExecutionNode<T> executionNode) {
     if (!hubs.containsKey(from)) {
       throw new IllegalStateException("Hub needs to be declared before outgoing edges can be created");
     }
     currentPipe = new ExecutionPipeline();
-    currentPipe.chain(executionGraphNode);
+    currentPipe.chain(executionNode);
     hubs.get(from).addOut(currentPipe, fromPort);
   }
 
-  private void chainFromHubToHub(@NotNull ExecutionGraphNode<T> from, int fromPort, @NotNull ExecutionGraphNode<T> to, int toPort) {
+  private void chainFromHubToHub(@NotNull ExecutionNode<T> from, int fromPort, @NotNull ExecutionNode<T> to, int toPort) {
     if (!hubs.containsKey(from)) {
       throw new IllegalStateException("Hub needs to be declared before outgoing edges can be created");
     }
@@ -331,7 +331,7 @@ class ExecutionGraphCompiler<T> {
 
   CompiledExecutionGraph compile(String runId) {
     final CompletableFuture<T> trigger = new ThreadlocalInheritingCompletableFuture<>();
-    final Set<ExecutionGraphNode<T>> startNodes = getStartNodes();
+    final Set<ExecutionNode<T>> startNodes = getStartNodes();
     if (startNodes.isEmpty()) {
       throw new InvalidExecutionGraphException("No root nodes have been detected. Please supply a non-empty acyclic configuration graph!");
     }

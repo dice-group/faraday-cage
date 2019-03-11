@@ -6,7 +6,7 @@ import org.pf4j.Extension;
  *
  */
 @Extension
-public class DegreeBoundRestrictedTestExecutionGraphNode extends TestExecutionGraphNode {
+public class DegreeBoundRestrictedTestExecutionNode extends TestExecutionNode {
 
   @Override
   public DegreeBounds getDegreeBounds() {

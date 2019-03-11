@@ -16,7 +16,7 @@ import java.util.Map;
 /**
  *
  */
-public class DecoratedExecutionNodeFactory<U extends ExecutionGraphNode<T>, V extends ExecutionNodeWrapper<U, T>, T> extends PluginFactory<U> {
+public class DecoratedExecutionNodeFactory<U extends ExecutionNode<T>, V extends ExecutionNodeWrapper<U, T>, T> extends PluginFactory<U> {
 
   private PluginFactory<V> wrapperFactory;
 

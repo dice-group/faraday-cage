@@ -11,7 +11,7 @@
 nbactions.xml
 
 # IntelliJ IDEA #
-faraday-cage.iml
+*.iml
 .idea/
 .DS_STORE
 dependency-reduced-pom.xml

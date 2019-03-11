@@ -12,11 +12,11 @@ import java.util.Objects;
  *
  *
  */
-public abstract class AbstractParameterizedExecutionGraphNode<T> extends AbstractExecutionGraphNode<T> implements Parameterized {
+public abstract class AbstractParameterizedExecutionNode<T> extends AbstractExecutionNode<T> implements Parameterized {
 
   private ValidatableParameterMap parameterMap = null;
 
-  public static abstract class WithImplicitCloning<T> extends AbstractParameterizedExecutionGraphNode<T> {
+  public static abstract class WithImplicitCloning<T> extends AbstractParameterizedExecutionNode<T> {
 
     public WithImplicitCloning() {
       this.useImplicitCloning(true);
@@ -41,7 +41,7 @@ public abstract class AbstractParameterizedExecutionGraphNode<T> extends Abstrac
 
   protected static Model getValidationModelFor(Class<?> clazz) {
     InputStream in =
-      ExecutionGraphNode.class.getResourceAsStream("/shacl/" + clazz.getCanonicalName() + ".ttl");
+      ExecutionNode.class.getResourceAsStream("/shacl/" + clazz.getCanonicalName() + ".ttl");
     if (Objects.isNull(in)) {
       return ModelFactory.createDefaultModel();
     }

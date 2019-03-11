@@ -29,11 +29,11 @@ class ConfigurationGraphValidator {
     baseValidationModel.read(ConfigurationGraphValidator.class.getResourceAsStream("/shacl/fcage:ExecutionNode.ttl"), null, FileUtils.langTurtle);
   }
 
-  private final DecoratedExecutionNodeFactory<? extends ExecutionGraphNode<?>, ? extends ExecutionNodeWrapper<? extends ExecutionGraphNode<?>, ?>, ?> factory;
+  private final DecoratedExecutionNodeFactory<? extends ExecutionNode<?>, ? extends ExecutionNodeWrapper<? extends ExecutionNode<?>, ?>, ?> factory;
 
   private final List<Resource> allPluginTypes;
 
-  ConfigurationGraphValidator(DecoratedExecutionNodeFactory<? extends ExecutionGraphNode<?>, ? extends ExecutionNodeWrapper<? extends ExecutionGraphNode<?>, ?>, ?> factory) {
+  ConfigurationGraphValidator(DecoratedExecutionNodeFactory<? extends ExecutionNode<?>, ? extends ExecutionNodeWrapper<? extends ExecutionNode<?>, ?>, ?> factory) {
     this.factory = factory;
     this.allPluginTypes = factory.listAvailable();
     allPluginTypes.addAll(factory.getWrapperFactory().listAvailable());

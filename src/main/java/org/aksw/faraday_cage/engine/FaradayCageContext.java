@@ -19,9 +19,9 @@ import java.util.function.Consumer;
 /**
  *
  */
-public class FaradayCageContext<U extends ExecutionGraphNode<T>, V extends ExecutionNodeWrapper<U, T>, T> {
+public class FaradayCageContext<U extends ExecutionNode<T>, V extends ExecutionNodeWrapper<U, T>, T> {
 
-  public static <U extends ExecutionGraphNode<T>, V extends ExecutionNodeWrapper<U, T>, T> FaradayCageContext<U, V, T> of(Class<U> uClass, Class<V> vClass, PluginManager pluginManager) {
+  public static <U extends ExecutionNode<T>, V extends ExecutionNodeWrapper<U, T>, T> FaradayCageContext<U, V, T> of(Class<U> uClass, Class<V> vClass, PluginManager pluginManager) {
     return new FaradayCageContext<>(uClass, vClass, pluginManager);
   }
 

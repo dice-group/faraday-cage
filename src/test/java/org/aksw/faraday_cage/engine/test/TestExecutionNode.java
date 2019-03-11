@@ -1,7 +1,7 @@
 package org.aksw.faraday_cage.engine.test;
 
-import org.aksw.faraday_cage.engine.AbstractParameterizedExecutionGraphNode;
-import org.aksw.faraday_cage.engine.ExecutionGraphNode;
+import org.aksw.faraday_cage.engine.AbstractParameterizedExecutionNode;
+import org.aksw.faraday_cage.engine.ExecutionNode;
 import org.aksw.faraday_cage.engine.ValidatableParameterMap;
 import org.aksw.faraday_cage.vocabulary.FCAGE;
 import org.apache.jena.rdf.model.Resource;
@@ -16,7 +16,7 @@ import java.util.function.UnaryOperator;
  *
  */
 @Extension
-public class TestExecutionGraphNode extends AbstractParameterizedExecutionGraphNode<String> implements TestUtil.ITestExecutionGraphNode {
+public class TestExecutionNode extends AbstractParameterizedExecutionNode<String> implements TestUtil.ITestExecutionNode {
 
   @Override
   protected List<String> safeApply(List<String> data) {
@@ -24,7 +24,7 @@ public class TestExecutionGraphNode extends AbstractParameterizedExecutionGraphN
       return List.of("Hello Sir!");
     }
     UnaryOperator<String> op = s -> s + "\nOh and Hello to you, Sir!";
-    return ExecutionGraphNode.toMultiExecution(op).apply(data);
+    return ExecutionNode.toMultiExecution(op).apply(data);
   }
 
   @Override

@@ -1,17 +1,17 @@
 package org.aksw.faraday_cage.decorator;
 
-import org.aksw.faraday_cage.engine.ExecutionGraphNode;
+import org.aksw.faraday_cage.engine.ExecutionNode;
 import org.aksw.faraday_cage.engine.Parameterized;
 import org.aksw.faraday_cage.engine.ValidatableParameterMap;
 
 /**
  * Base abstract class for decorator pattern
  */
-public abstract class AbstractParameterizedExecutionGraphNodeDecorator<V extends Parameterized & ExecutionGraphNode<T>, T> extends AbstractExecutionGraphNodeDecorator<T> implements Parameterized {
+public abstract class AbstractParameterizedExecutionNodeDecorator<V extends Parameterized & ExecutionNode<T>, T> extends AbstractExecutionNodeDecorator<T> implements Parameterized {
 
   private V wrapped;
 
-  public AbstractParameterizedExecutionGraphNodeDecorator(V other) {
+  public AbstractParameterizedExecutionNodeDecorator(V other) {
     super(other);
     wrapped = other;
   }

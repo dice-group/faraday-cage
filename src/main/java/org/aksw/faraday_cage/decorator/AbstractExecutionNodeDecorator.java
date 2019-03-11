@@ -1,6 +1,6 @@
 package org.aksw.faraday_cage.decorator;
 
-import org.aksw.faraday_cage.engine.ExecutionGraphNode;
+import org.aksw.faraday_cage.engine.ExecutionNode;
 import org.apache.jena.rdf.model.Resource;
 import org.jetbrains.annotations.NotNull;
 
@@ -9,11 +9,11 @@ import java.util.List;
 /**
  * Base abstract class for decorator pattern
  */
-public abstract class AbstractExecutionGraphNodeDecorator<T> implements ExecutionGraphNode<T> {
+public abstract class AbstractExecutionNodeDecorator<T> implements ExecutionNode<T> {
 
-  private ExecutionGraphNode<T> wrapped;
+  private ExecutionNode<T> wrapped;
 
-  public AbstractExecutionGraphNodeDecorator(ExecutionGraphNode<T> other) {
+  public AbstractExecutionNodeDecorator(ExecutionNode<T> other) {
     this.wrapped = other;
   }
 
@@ -67,7 +67,7 @@ public abstract class AbstractExecutionGraphNodeDecorator<T> implements Executio
     return wrapped.isInitialized();
   }
 
-  protected final ExecutionGraphNode<T> getWrapped() {
+  protected final ExecutionNode<T> getWrapped() {
     return wrapped;
   }
 

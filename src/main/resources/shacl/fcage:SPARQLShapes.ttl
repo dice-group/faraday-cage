@@ -3,23 +3,3 @@
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix fcage: <http://w3id.org/fcage/> .
-
-fcage:
-    sh:declare [
-      sh:prefix "fcage" ;
-      sh:namespace "http://w3id.org/fcage/"^^xsd:anyURI ;
-    ] .
-
-fcage:AllInputsValid
-		a sh:SPARQLConstraint ;   # This triple is optional
-		sh:message "All fcage:hasInput declarations, whether implicit or explicit, are valid." ;
-		sh:prefixes fcage: ;
-		sh:select """
-			SELECT $this (fcage:hasInput AS ?path) ?value
-			WHERE {
-				$this fcage:hasInput ?value .
-				{}
-
-				FILTER (!isLiteral(?value) || !langMatches(lang(?value), "de"))
-			}
-			""" .

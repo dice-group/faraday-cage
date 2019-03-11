@@ -8,7 +8,7 @@ import java.util.function.UnaryOperator;
 /**
  *
  */
-public interface ExecutionGraphNode<T> extends ExtensionPoint, Plugin {
+public interface ExecutionNode<T> extends ExtensionPoint, Plugin {
 
   class DegreeBounds {
 

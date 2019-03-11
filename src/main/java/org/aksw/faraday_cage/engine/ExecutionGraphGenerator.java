@@ -26,15 +26,15 @@ class ExecutionGraphGenerator {
 
   private static final Logger logger = LoggerFactory.getLogger(ExecutionGraphGenerator.class);
 
-  static <T> ExecutionGraph<T> generate(Model configGraph, PluginFactory<? extends ExecutionGraphNode<T>> factory) {
-    Map<Resource, ExecutionGraphNode<T>> executionGraphNodeMap = new HashMap<>();
+  static <T> ExecutionGraph<T> generate(Model configGraph, PluginFactory<? extends ExecutionNode<T>> factory) {
+    Map<Resource, ExecutionNode<T>> executionGraphNodeMap = new HashMap<>();
     // fill executionGraphNodeMap with mappings from plugin ids to implementations using the factory
     ModelFactory.createInfModel(ReasonerRegistry.getTransitiveReasoner(), configGraph)
       .listStatements(null, RDF.type, (RDFNode) null)
       .filterKeep(stmt -> stmt.getObject().asResource().hasProperty(RDFS.subClassOf, FCAGE.ExecutionNode))
       .mapWith(Statement::getSubject)
       .forEachRemaining(nodeResource -> {
-        ExecutionGraphNode<T> node = factory.create(nodeResource);
+        ExecutionNode<T> node = factory.create(nodeResource);
         if (node instanceof Parameterized) {
           ValidatableParameterMap parameterMap = ((Parameterized) node).createParameterMap();
           parameterMap.populate(nodeResource);
@@ -63,7 +63,7 @@ class ExecutionGraphGenerator {
   }
 
 
-  private static  <T> void generateEdgesForResource(ExecutionGraph<T> executionGraph, Resource node, List<Resource> targets, Map<Resource, ExecutionGraphNode<T>> executionGraphNodeMap) {
+  private static  <T> void generateEdgesForResource(ExecutionGraph<T> executionGraph, Resource node, List<Resource> targets, Map<Resource, ExecutionNode<T>> executionGraphNodeMap) {
     AtomicInteger i = new AtomicInteger(0);
     Map<Pair<Resource, Resource>, Integer> lastToPortMap = new HashMap<>();
     targets.forEach(r -> {
