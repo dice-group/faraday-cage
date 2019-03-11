@@ -50,7 +50,7 @@ public abstract class AbstractExecutionGraphNode<T> implements ExecutionGraphNod
         " is " + inDegree + ", but must be in [" + degreeBounds.minIn() + ", " + degreeBounds.maxIn() + "]!");
     }
     if (outDegree < degreeBounds.minOut() ||
-      (!useImplicitCloning || (degreeBounds.maxOut() != 1)) && (inDegree > degreeBounds.maxOut())) {
+      (!useImplicitCloning || (degreeBounds.maxOut() != 1)) && (outDegree > degreeBounds.maxOut())) {
       throw new InvalidExecutionGraphException("Number of outputs for node " + id +
         " is " + outDegree + ", but must be in [" + degreeBounds.minOut() + ", " + degreeBounds.maxOut() + "]!");
     }
