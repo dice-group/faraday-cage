@@ -46,7 +46,7 @@ public class PluginFactory<U extends Plugin> {
    * {@code Class}.
    *  @param clazz {@code Class} instance for this {@code FaradayCagePluginFactory}s type parameter
    * @param pluginManager the {@code PluginManager} to be used in this {@code FaradayCagePluginFactory}
-   * @param type Common parent ExecutionGraphNode subtype IRI which all instances producible
+   * @param type Common parent ExecutionNode subtype IRI which all instances producible
    *             by this factory share.
    *
    */
