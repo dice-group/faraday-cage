@@ -17,6 +17,10 @@ public class ExecutionGraph<T> {
 
   private static final Logger logger = LoggerFactory.getLogger(ExecutionGraph.class);
 
+  private List<ExecutionNode<T>> vertices = new ArrayList<>();
+
+  private List<List<List<Integer>>> adjacencyMatrix = new ArrayList<>();
+
   private Map<ExecutionNode<T>, List<Edge<T>>> edges = new HashMap<>();
 
   static class Edge<T> {
@@ -45,24 +49,69 @@ public class ExecutionGraph<T> {
   }
 
   public ExecutionGraph() {
-    
+
+  }
+
+  public void computeEdges() {
+    int l = vertices.size();
+    for (int i = 0; i < l; i++) {
+      ExecutionNode<T> from = vertices.get(i);
+      if (!edges.containsKey(from)) {
+        edges.put(from, new ArrayList<>());
+      }
+      for (int j = 0; j < l; j++) {
+        ExecutionNode<T> to = vertices.get(j);
+        List<Integer> ports = adjacencyMatrix.get(i).get(j);
+        for (int k = 0; k < ports.size(); k += 2) {
+          int fromPort = ports.get(k);
+          int toPort = ports.get(k+1);
+          edges.get(from).add(new Edge<>(fromPort, toPort, to));
+        }
+      }
+    }
   }
 
   public ExecutionGraph addEdge(ExecutionNode<T> from, int fromPort, ExecutionNode<T> to, int toPort) {
-    if (!edges.containsKey(from)) {
-      edges.put(from, new ArrayList<>());
+    if (!vertices.contains(from)) {
+      createVertex(from);
     }
-    edges.get(from).add(new Edge<>(fromPort, toPort, to));
+    int i = vertices.indexOf(from);
+    if (!vertices.contains(to)) {
+      createVertex(to);
+    }
+    int j = vertices.indexOf(to);
+    adjacencyMatrix.get(i).get(j).add(fromPort);
+    adjacencyMatrix.get(i).get(j).add(toPort);
     return this;
   }
 
   public CompiledExecutionGraph compile() {
+    computeEdges();
     return new ExecutionGraphCompiler<>(edges).compile(FaradayCageContext.newRunId());
   }
 
   CompiledExecutionGraph compile(String runId) {
+    computeEdges();
     FaradayCageContext.setRunId(runId);
     return new ExecutionGraphCompiler<>(edges).compile(runId);
   }
+
+  public ExecutionGraph createVertex(ExecutionNode<T> node) {
+    int index = vertices.size();
+    vertices.add(node);
+    adjacencyMatrix.add(new ArrayList<>());
+    for (int i = 0; i <= index; i++) {
+      adjacencyMatrix.get(index).add(new ArrayList<>());
+    }
+    return this;
+  }
+
+  /**
+   * was brauch ich hier?
+   *  getRandomVertex
+   *  getRandomSubsequence
+   *  merge / branch
+   *  io.jenetics:prngine:1.0.1
+   */
 
 }
