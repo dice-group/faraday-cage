@@ -2,6 +2,7 @@ package org.aksw.faraday_cage.engine;
 
 import org.apache.jena.rdf.model.Resource;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +16,7 @@ public abstract class AbstractExecutionNode<T> implements ExecutionNode<T> {
 
   private int inDegree = -1;
   private int outDegree = -1;
+  @Nullable
   private Resource id = null;
   private boolean useImplicitCloning = false;
 
@@ -68,6 +70,7 @@ public abstract class AbstractExecutionNode<T> implements ExecutionNode<T> {
     return id;
   }
 
+  @NotNull
   @Override
   public final List<T> apply(List<T> data) {
     if (!isInitialized()) {

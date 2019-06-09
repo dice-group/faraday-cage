@@ -3,6 +3,7 @@ package org.aksw.faraday_cage.engine;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import org.apache.jena.rdf.model.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.stream.Stream;
@@ -24,6 +25,7 @@ import java.util.stream.Stream;
  */
 public class ValidatableParameterMap {
 
+  @NotNull
   public static ValidatableParameterMap emptyInstance() {
     return new ValidatableParameterMap(List.of(), ModelFactory.createDefaultModel());
   }
@@ -32,6 +34,7 @@ public class ValidatableParameterMap {
    * Obtain a builder instance
    * @return a fresh builder instance
    */
+  @NotNull
   public static Builder builder() {
     return new Builder();
   }
@@ -41,8 +44,10 @@ public class ValidatableParameterMap {
    */
   public static class Builder {
 
+    @NotNull
     private List<Property> propertyList = new ArrayList<>();
 
+    @NotNull
     private Model validationModel = ModelFactory.createDefaultModel();
 
     private Builder() {}
@@ -53,6 +58,7 @@ public class ValidatableParameterMap {
      * @param property   property declared
      * @return this instance for method chaining
      */
+    @NotNull
     public Builder declareProperty(Property property) {
       propertyList.add(property);
       return this;
@@ -63,6 +69,7 @@ public class ValidatableParameterMap {
      * @param validationShape  a Supplier of a SHACL graph
      * @return this instance for method chaining
      */
+    @NotNull
     public Builder declareValidationShape(Model validationShape) {
       validationModel.add(validationShape);
       return this;
@@ -72,6 +79,7 @@ public class ValidatableParameterMap {
      * Build an {@code ValidatableParameterMap} instance from the current state of the Builder
      * @return a fresh {@code ValidatableParameterMap} instance
      */
+    @NotNull
     public ValidatableParameterMap build() {
       return new ValidatableParameterMap(propertyList, validationModel);
     }
@@ -80,8 +88,10 @@ public class ValidatableParameterMap {
 
   private final Model validationModel;
 
+  @NotNull
   private final List<Property> declaredProperties;
 
+  @NotNull
   private final Multimap<Property, RDFNode> rootMap;
 
   private final Model backingModel = ModelFactory.createDefaultModel();
@@ -91,7 +101,7 @@ public class ValidatableParameterMap {
   /**
    * Private Constructor
    */
-  private ValidatableParameterMap(List<Property> declaredProperties, Model validationModel) {
+  private ValidatableParameterMap(@NotNull List<Property> declaredProperties, Model validationModel) {
     this.validationModel = validationModel;
     this.declaredProperties = declaredProperties;
     rootMap = ArrayListMultimap.create(declaredProperties.size(), 1);
@@ -103,7 +113,8 @@ public class ValidatableParameterMap {
    *
    * @param root  this {@code Resource} needs to be backed by a {@code Model}
    */
-  public ValidatableParameterMap populate(Resource root) {
+  @NotNull
+  public ValidatableParameterMap populate(@NotNull Resource root) {
     checkWritable();
     declaredProperties.stream()
       .filter(root::hasProperty)
@@ -115,7 +126,8 @@ public class ValidatableParameterMap {
   /**
    * Add all remaining {@link Statement}s from a given {@link StmtIterator} to this {@code ValidatableParameterMap}
    */
-  public ValidatableParameterMap add(StmtIterator it) {
+  @NotNull
+  public ValidatableParameterMap add(@NotNull StmtIterator it) {
     checkWritable();
     it.forEachRemaining(stmt -> add(stmt.getPredicate(), stmt.getObject()));
     return this;
@@ -127,7 +139,8 @@ public class ValidatableParameterMap {
    * this {@code ValidatableParameterMap} by depth-first search.
    * Infinite loops from cyclical subgraphs are prevented by maintaining a set of visited resources.
    */
-  public ValidatableParameterMap add(Property p, RDFNode node) {
+  @NotNull
+  public ValidatableParameterMap add(@NotNull Property p, @NotNull RDFNode node) {
     checkWritable();
     Deque<RDFNode> stack = new ArrayDeque<>();
     Set<Resource> visited = new HashSet<>();
@@ -153,6 +166,7 @@ public class ValidatableParameterMap {
    * Initializing effectively disables all writing operations (attempting to write will result in exceptions)
    * and enables all reading operations.
    */
+  @NotNull
   public ValidatableParameterMap init() {
     checkWritable();
     this.initialized = true;
@@ -170,6 +184,7 @@ public class ValidatableParameterMap {
   /**
    * Get the first object for a given property as an {@code Optional}.
    */
+  @NotNull
   public Optional<RDFNode> getOptional(Property p) {
     checkReadable();
     return listPropertyObjects(p).findFirst();
@@ -178,6 +193,7 @@ public class ValidatableParameterMap {
   /**
    * Get the first object for a given property as an {@code Optional}.
    */
+  @NotNull
   public RDFNode get(Property p) {
     checkReadable();
     //noinspection OptionalGetWithoutIsPresent
@@ -190,7 +206,7 @@ public class ValidatableParameterMap {
    *
    * @return the parameter graph for the given {@code Resource}
    */
-  public Model parametrize(Resource exNode) {
+  public Model parametrize(@NotNull Resource exNode) {
     checkReadable();
     Model parameterModel = ModelFactory.createDefaultModel().add(backingModel);
     final Resource r = exNode.inModel(parameterModel);

@@ -4,6 +4,7 @@ import org.aksw.faraday_cage.engine.ExecutionGraph;
 import org.aksw.faraday_cage.engine.InvalidExecutionGraphException;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
+import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -45,7 +46,7 @@ public class ExecutionGraphCompilerTest {
     assertTrue("The appropriate RuntimeException should be thrown", testConfigForRuntimeException(executionGraph, "No root"));
   }
 
-  private boolean testConfigForRuntimeException(ExecutionGraph<String> executionGraph, String...matchStrings) {
+  private boolean testConfigForRuntimeException(@NotNull ExecutionGraph<String> executionGraph, @NotNull String...matchStrings) {
     boolean pass = false;
     try {
       executionGraph.compile();

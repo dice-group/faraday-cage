@@ -1,5 +1,6 @@
 package org.aksw.faraday_cage.engine;
 
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,10 +18,13 @@ public class ExecutionGraph<T> {
 
   private static final Logger logger = LoggerFactory.getLogger(ExecutionGraph.class);
 
+  @NotNull
   private List<ExecutionNode<T>> vertices = new ArrayList<>();
 
+  @NotNull
   private List<List<List<Integer>>> adjacencyMatrix = new ArrayList<>();
 
+  @NotNull
   private Map<ExecutionNode<T>, List<Edge<T>>> edges = new HashMap<>();
 
   static class Edge<T> {
@@ -71,6 +75,7 @@ public class ExecutionGraph<T> {
     }
   }
 
+  @NotNull
   public ExecutionGraph addEdge(ExecutionNode<T> from, int fromPort, ExecutionNode<T> to, int toPort) {
     if (!vertices.contains(from)) {
       createVertex(from);
@@ -96,6 +101,7 @@ public class ExecutionGraph<T> {
     return new ExecutionGraphCompiler<>(edges).compile(runId);
   }
 
+  @NotNull
   public ExecutionGraph createVertex(ExecutionNode<T> node) {
     int index = vertices.size();
     vertices.add(node);

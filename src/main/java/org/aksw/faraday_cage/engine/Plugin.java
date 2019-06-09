@@ -12,7 +12,7 @@ public interface Plugin extends ExtensionPoint {
 
   @NotNull Resource getId();
 
-  static Resource getImplementationType(Resource executionId) {
+  static Resource getImplementationType(@NotNull Resource executionId) {
     Resource implementation = executionId.getPropertyResourceValue(RDF.type);
     if (implementation == null) {
       throw new RuntimeException("Implementation type of " + executionId + " is not specified!");

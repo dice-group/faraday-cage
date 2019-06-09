@@ -6,6 +6,7 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.RDFList;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
+import org.jetbrains.annotations.NotNull;
 import org.pf4j.PluginManager;
 
 import java.util.ArrayList;
@@ -22,8 +23,10 @@ public class DecoratedExecutionNodeFactory<U extends ExecutionNode<T>, V extends
 
   private List<Resource> universalWrappers = new ArrayList<>();
 
+  @NotNull
   private Map<Resource, List<Resource>> typeWrappers = new HashMap<>();
 
+  @NotNull
   private Map<Resource, List<Resource>> instanceWrappers = new HashMap<>();
 
   private List<Resource> types = listAvailable();
@@ -38,13 +41,13 @@ public class DecoratedExecutionNodeFactory<U extends ExecutionNode<T>, V extends
    * @param pluginManager
    *         the {@code PluginManager} to be used in this {@code DecoratedExecutionNodeFactory}
    */
-  DecoratedExecutionNodeFactory(Class<U> clazz, Class<V> clazz2, PluginManager pluginManager, Model configModel) {
+  DecoratedExecutionNodeFactory(Class<U> clazz, Class<V> clazz2, @NotNull PluginManager pluginManager, @NotNull Model configModel) {
     super(clazz, pluginManager, FCAGE.ExecutionNode);
     registerWrappers(configModel);
     wrapperFactory = new PluginFactory<>(clazz2, pluginManager, FCAGE.ExecutionNodeWrapper);
   }
 
-  private void registerWrappers(Model configModel) {
+  private void registerWrappers(@NotNull Model configModel) {
     configModel.listStatements(null, FCAGE.decoratedBy, (RDFNode) null)
       .forEachRemaining(stmt -> {
         Resource s = stmt.getSubject();
@@ -72,13 +75,13 @@ public class DecoratedExecutionNodeFactory<U extends ExecutionNode<T>, V extends
   }
 
   @Override
-  public U getImplementationOf(Resource type) {
+  public U getImplementationOf(@NotNull Resource type) {
     U u = super.getImplementationOf(type);
     return wrap(u);
   }
 
   @Override
-  public U create(Resource id) {
+  public U create(@NotNull Resource id) {
     U u = super.create(id);
     return wrap(u);
   }
@@ -87,7 +90,7 @@ public class DecoratedExecutionNodeFactory<U extends ExecutionNode<T>, V extends
     return wrapperFactory;
   }
 
-  private U wrap(U u) {
+  private U wrap(@NotNull U u) {
     U wrapped = u;
     List<Resource> wrapperIds = new ArrayList<>(universalWrappers);
     if (typeWrappers.containsKey(u.getType())) {
@@ -103,7 +106,7 @@ public class DecoratedExecutionNodeFactory<U extends ExecutionNode<T>, V extends
   }
 
   @SuppressWarnings("Duplicates")
-  private V createWrapper(Resource wrapperId) {
+  private V createWrapper(@NotNull Resource wrapperId) {
     V wrapper = wrapperFactory.create(wrapperId);
     if (wrapper instanceof Parameterized) {
       ValidatableParameterMap parameterMap = ((Parameterized) wrapper).createParameterMap();

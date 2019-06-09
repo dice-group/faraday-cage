@@ -2,6 +2,7 @@ package org.aksw.faraday_cage.example;
 
 import org.aksw.faraday_cage.engine.ValidatableParameterMap;
 import org.apache.jena.rdf.model.Property;
+import org.jetbrains.annotations.NotNull;
 import org.pf4j.Extension;
 
 import java.util.List;
@@ -16,8 +17,9 @@ public class SubStringOperation extends AbstractStringOperation {
 
   public static final Property LENGTH = ExampleApplication.createProperty("length");
 
+  @NotNull
   @Override
-  protected List<String> safeApply(List<String> data) {
+  protected List<String> safeApply(@NotNull List<String> data) {
     String s = data.get(0);
     int i = 0;
     int len = getParameterMap().get(LENGTH).asLiteral().getInt();
@@ -37,6 +39,7 @@ public class SubStringOperation extends AbstractStringOperation {
       .build();
   }
 
+  @NotNull
   @Override
   public DegreeBounds getDegreeBounds() {
     return new DegreeBounds(1, 1, 1, 1);

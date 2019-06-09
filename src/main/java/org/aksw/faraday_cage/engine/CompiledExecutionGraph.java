@@ -1,5 +1,7 @@
 package org.aksw.faraday_cage.engine;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -31,13 +33,13 @@ public class CompiledExecutionGraph implements Runnable {
     if (joiner.isCompletedExceptionally()) {
       try {
         joiner.get();
-      } catch (InterruptedException | ExecutionException e) {
+      } catch (@NotNull InterruptedException | ExecutionException e) {
         throw new RuntimeException(e.getCause());
       }
     }
   }
 
-  public void andThen(Runnable r) {
+  public void andThen(@NotNull Runnable r) {
     joiner.thenRun(r);
   }
 }

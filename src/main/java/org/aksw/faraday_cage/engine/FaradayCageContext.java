@@ -5,6 +5,7 @@ import org.apache.commons.lang3.time.StopWatch;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
+import org.jetbrains.annotations.NotNull;
 import org.pf4j.PluginManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +22,7 @@ import java.util.function.Consumer;
  */
 public class FaradayCageContext<U extends ExecutionNode<T>, V extends ExecutionNodeWrapper<U, T>, T> {
 
+  @NotNull
   public static <U extends ExecutionNode<T>, V extends ExecutionNodeWrapper<U, T>, T> FaradayCageContext<U, V, T> of(Class<U> uClass, Class<V> vClass, PluginManager pluginManager) {
     return new FaradayCageContext<>(uClass, vClass, pluginManager);
   }
@@ -37,10 +39,12 @@ public class FaradayCageContext<U extends ExecutionNode<T>, V extends ExecutionN
     valueConsumer.add(runIdConsumer);
   }
 
+  @NotNull
   public static <X> CompletableFuture<X> getCompletableFuture() {
     return new ThreadlocalInheritingCompletableFuture<>();
   }
 
+  @NotNull
   public static <X> CompletableFuture<X> getCompletedFuture(X completionValue) {
     return ThreadlocalInheritingCompletableFuture.completedFuture(completionValue);
   }
@@ -61,6 +65,7 @@ public class FaradayCageContext<U extends ExecutionNode<T>, V extends ExecutionN
 
   private final PluginManager pluginManager;
 
+  @NotNull
   private final DecoratedExecutionNodeFactory<U,V,T> factory;
 
   private final Model pluginDeclarations = ModelFactory.createDefaultModel();
@@ -78,6 +83,7 @@ public class FaradayCageContext<U extends ExecutionNode<T>, V extends ExecutionN
       .forEach(pluginDeclarations::add);
   }
 
+  @NotNull
   public Model getAllAvailablePluginDeclarations() {
     return pluginDeclarations;
   }
@@ -90,11 +96,11 @@ public class FaradayCageContext<U extends ExecutionNode<T>, V extends ExecutionN
     return new ConfigurationGraphValidator(factory).getFullValidationModel();
   }
 
-  public void run(Model configModel) {
+  public void run(@NotNull Model configModel) {
     run(compile(configModel));
   }
 
-  public void run(CompiledExecutionGraph compiledExecutionGraph) {
+  public void run(@NotNull CompiledExecutionGraph compiledExecutionGraph) {
     StopWatch time = new StopWatch();
     logger.info("Starting execution...");
     time.start();
@@ -103,11 +109,11 @@ public class FaradayCageContext<U extends ExecutionNode<T>, V extends ExecutionN
     logger.info("Execution finished after {}ms", time.getSplitTime());
   }
 
-  public CompiledExecutionGraph compile(Model configModel) {
+  public CompiledExecutionGraph compile(@NotNull Model configModel) {
     return compile(configModel, newRunId());
   }
 
-  public CompiledExecutionGraph compile(Model configModel, String runId) {
+  public CompiledExecutionGraph compile(@NotNull Model configModel, String runId) {
     StopWatch time = new StopWatch();
     logger.info("Starting Faraday-Cage engine... runId: " + runId);
     logger.info("Building execution model...");
@@ -126,7 +132,7 @@ public class FaradayCageContext<U extends ExecutionNode<T>, V extends ExecutionN
     return compiled;
   }
 
-  private void validate(Model configModel, DecoratedExecutionNodeFactory<U,V,T> pluginFactory) {
+  private void validate(@NotNull Model configModel, @NotNull DecoratedExecutionNodeFactory<U,V,T> pluginFactory) {
     Resource validationReport = new ConfigurationGraphValidator(pluginFactory).validate(configModel);
     if (!ConfigurationGraphValidator.isConformingValidationReport(validationReport)) {
       throw new IllegalArgumentException("Invalid configuration graph!\n" +

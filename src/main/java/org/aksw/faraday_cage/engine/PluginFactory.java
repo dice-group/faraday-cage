@@ -4,6 +4,7 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.vocabulary.RDFS;
+import org.jetbrains.annotations.NotNull;
 import org.pf4j.ExtensionFactory;
 import org.pf4j.PluginManager;
 
@@ -50,7 +51,7 @@ public class PluginFactory<U extends Plugin> {
    *             by this factory share.
    *
    */
-  public PluginFactory(Class<U> clazz, PluginManager pluginManager, Resource type) {
+  public PluginFactory(Class<U> clazz, @NotNull PluginManager pluginManager, Resource type) {
     this.clazz = clazz;
     this.pluginManager = pluginManager;
     this.factory = pluginManager.getExtensionFactory();
@@ -64,6 +65,7 @@ public class PluginFactory<U extends Plugin> {
    *
    * @return the class map for this {@code FaradayCagePluginFactory}s type parameter
    */
+  @NotNull
   private Map<Resource, Class<?>> createClassMap() {
     Map<Resource, Class<?>> classMap = new HashMap<>();
     pluginManager.getExtensions(clazz).forEach(
@@ -78,7 +80,7 @@ public class PluginFactory<U extends Plugin> {
    * @param  id  identifier of the instance to create
    * @return  instance of the {@code FaradayCagePlugin} identified by {@code id}.
    */
-  public U create(Resource id) {
+  public U create(@NotNull Resource id) {
     Resource type = Plugin.getImplementationType(id);
     U u = getInstance(type);
     u.initPluginId(id);
@@ -91,7 +93,7 @@ public class PluginFactory<U extends Plugin> {
    * @param  type type of the instance to create
    * @return  instance of the {@code FaradayCagePlugin} for the given {@code type}.
    */
-  public U getImplementationOf(Resource type) {
+  public U getImplementationOf(@NotNull Resource type) {
     U u = getInstance(type);
     u.initPluginId(type);
     return u;

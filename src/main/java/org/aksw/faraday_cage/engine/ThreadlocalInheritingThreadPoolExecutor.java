@@ -11,6 +11,7 @@ import java.util.concurrent.*;
  */
 class ThreadlocalInheritingThreadPoolExecutor extends ForkJoinPool {
 
+  @NotNull
   static ThreadlocalInheritingThreadPoolExecutor get(int parallelism) {
     return new ThreadlocalInheritingThreadPoolExecutor(parallelism);
   }
@@ -20,22 +21,22 @@ class ThreadlocalInheritingThreadPoolExecutor extends ForkJoinPool {
   }
 
   @Override
-  public void execute(Runnable command) {
+  public void execute(@NotNull Runnable command) {
     super.execute(wrap(command));
   }
 
   @NotNull
-  public <T> ForkJoinTask<T> submit(Callable<T> task) {
+  public <T> ForkJoinTask<T> submit(@NotNull Callable<T> task) {
     return super.submit(wrap(task));
   }
 
   @NotNull
-  public <T> ForkJoinTask<T> submit(Runnable task, T result) {
+  public <T> ForkJoinTask<T> submit(@NotNull Runnable task, T result) {
     return super.submit(wrap(task), result);
   }
 
   @NotNull
-  public ForkJoinTask<?> submit(Runnable task) {
+  public ForkJoinTask<?> submit(@NotNull Runnable task) {
     return super.submit(wrap(task));
   }
 
@@ -56,12 +57,14 @@ class ThreadlocalInheritingThreadPoolExecutor extends ForkJoinPool {
     throw new UnsupportedOperationException("Operation not implemented.");
   }
 
+  @NotNull
   public <T> T invokeAny(Collection<? extends Callable<T>> tasks,
                          long timeout, TimeUnit unit) {
     throw new UnsupportedOperationException("Operation not implemented.");
   }
 
-  private static Runnable wrap(final Runnable runnable) {
+  @NotNull
+  private static Runnable wrap(@NotNull final Runnable runnable) {
     String newRunId = FaradayCageContext.getRunId();
     return () -> {
       String previousRunId = FaradayCageContext.getRunId();
@@ -75,7 +78,8 @@ class ThreadlocalInheritingThreadPoolExecutor extends ForkJoinPool {
     };
   }
 
-  private static <V> Callable<V> wrap(final Callable<V> callable) {
+  @NotNull
+  private static <V> Callable<V> wrap(@NotNull final Callable<V> callable) {
     String newRunId = FaradayCageContext.getRunId();
     return () -> {
       String previousRunId = FaradayCageContext.getRunId();

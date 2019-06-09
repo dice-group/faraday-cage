@@ -7,6 +7,7 @@ import org.apache.jena.rdf.model.*;
 import org.apache.jena.reasoner.ReasonerRegistry;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,7 +27,8 @@ class ExecutionGraphGenerator {
 
   private static final Logger logger = LoggerFactory.getLogger(ExecutionGraphGenerator.class);
 
-  static <T> ExecutionGraph<T> generate(Model configGraph, PluginFactory<? extends ExecutionNode<T>> factory) {
+  @NotNull
+  static <T> ExecutionGraph<T> generate(@NotNull Model configGraph, @NotNull PluginFactory<? extends ExecutionNode<T>> factory) {
     Map<Resource, ExecutionNode<T>> ExecutionNodeMap = new HashMap<>();
     // fill ExecutionNodeMap with mappings from plugin ids to implementations using the factory
     ModelFactory.createInfModel(ReasonerRegistry.getTransitiveReasoner(), configGraph)
@@ -63,7 +65,7 @@ class ExecutionGraphGenerator {
   }
 
 
-  private static  <T> void generateEdgesForResource(ExecutionGraph<T> executionGraph, Resource node, List<Resource> targets, Map<Resource, ExecutionNode<T>> ExecutionNodeMap) {
+  private static  <T> void generateEdgesForResource(@NotNull ExecutionGraph<T> executionGraph, Resource node, @NotNull List<Resource> targets, @NotNull Map<Resource, ExecutionNode<T>> ExecutionNodeMap) {
     AtomicInteger i = new AtomicInteger(0);
     Map<Pair<Resource, Resource>, Integer> lastToPortMap = new HashMap<>();
     targets.forEach(r -> {
@@ -72,7 +74,7 @@ class ExecutionGraphGenerator {
           int toPort = r.getProperty(FCAGE.toPort).getInt();
           Resource toNode = r.getProperty(FCAGE.toNode).getResource();
           executionGraph.addEdge(ExecutionNodeMap.get(node), i.getAndIncrement(), ExecutionNodeMap.get(toNode), toPort);
-        } catch (LiteralRequiredException | NumberFormatException e) {
+        } catch (@NotNull LiteralRequiredException | NumberFormatException e) {
           throw new RuntimeException("Error in definition of " + node + "! Invalid value \"" + r.getProperty(FCAGE.toPort).getObject() + "\" for " + FCAGE.toPort + ", allowed range is integer literals", e);
         } catch (ResourceRequiredException e) {
           throw new RuntimeException("Error in definition of " + node + "! Invalid value \"" + r.getProperty(FCAGE.toNode).getObject() + "\" for " + FCAGE.toNode + ", allowed range is resources", e);

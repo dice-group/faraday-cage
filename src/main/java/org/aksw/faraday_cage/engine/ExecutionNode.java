@@ -1,5 +1,6 @@
 package org.aksw.faraday_cage.engine;
 
+import org.jetbrains.annotations.NotNull;
 import org.pf4j.ExtensionPoint;
 
 import java.util.List;
@@ -40,6 +41,7 @@ public interface ExecutionNode<T> extends ExtensionPoint, Plugin {
       return maxOut;
     }
 
+    @NotNull
     public String toString() {
       return minIn + " <= in <= " + maxIn + "; " + minOut + " <= out <= " + maxOut;
     }
@@ -58,7 +60,8 @@ public interface ExecutionNode<T> extends ExtensionPoint, Plugin {
 
   void initDegrees(int inDegree, int outDegree);
 
-  static <T> UnaryOperator<List<T>> toMultiExecution(UnaryOperator<T> singleExecution) {
+  @NotNull
+  static <T> UnaryOperator<List<T>> toMultiExecution(@NotNull UnaryOperator<T> singleExecution) {
     return (dates -> List.of(singleExecution.apply(dates.isEmpty() ? null : dates.get(0))));
   }
 

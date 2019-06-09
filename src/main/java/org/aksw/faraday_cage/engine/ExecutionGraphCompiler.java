@@ -2,6 +2,7 @@ package org.aksw.faraday_cage.engine;
 
 import org.apache.jena.rdf.model.Resource;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,26 +27,29 @@ class ExecutionGraphCompiler<T> {
   private final List<ExecutionHub> startHubs = new ArrayList<>();
   private final Map<ExecutionNode<T>, ExecutionHub> hubs = new HashMap<>();
   private final Map<ExecutionNode<T>, List<ExecutionGraph.Edge<T>>> edges;
+  @NotNull
   private final Map<ExecutionNode<T>, int[]> degrees;
   private ExecutionPipeline currentPipe;
   private CompletableFuture<T> joiner;
 
-  private static String optionalShortFormOf(Resource resource) {
+  private static String optionalShortFormOf(@NotNull Resource resource) {
     return Objects.nonNull(resource.getModel()) ?
       resource.getModel().shortForm(resource.getURI()) :
       resource.getURI();
   }
 
   private class ExecutionPipeline implements Function<T, CompletableFuture<T>> {
+    @NotNull
     private CompletableFuture<T> trigger = new ThreadlocalInheritingCompletableFuture<>();
     private CompletableFuture<T> result = this.trigger;
+    @Nullable
     private Function<T, CompletableFuture<T>> callBack = null;
 
     void setCallback(Function<T, CompletableFuture<T>> fn) {
       this.callBack = fn;
     }
 
-    void chain(ExecutionNode<T> fn) {
+    void chain(@NotNull ExecutionNode<T> fn) {
       this.result = result.thenApply(t -> {
         logger.info("{} executes", fn.getId().toString());
         List<T> result = fn.apply(t == null ? List.of() : List.of(t));
@@ -81,7 +85,7 @@ class ExecutionGraphCompiler<T> {
       try {
         T t = result.get();
         return callBack(t);
-      } catch (ExecutionException | InterruptedException e) {
+      } catch (@NotNull ExecutionException | InterruptedException e) {
         throw new RuntimeException(e);
       }
     }
@@ -90,8 +94,10 @@ class ExecutionGraphCompiler<T> {
 
   private class ExecutionHub {
 
+    @NotNull
     private List<T> inDates = new ArrayList<>();
     private List<T> outDates = new ArrayList<>();
+    @NotNull
     private CompletableFuture<Void> trigger = new ThreadlocalInheritingCompletableFuture<>();
     private CompletableFuture<T> completion = ThreadlocalInheritingCompletableFuture.completedFuture(null);
     private int outCount = 0;
@@ -103,13 +109,13 @@ class ExecutionGraphCompiler<T> {
       this.hubExecutionNode = hubExecutionNode;
     }
 
-    void addIn(ExecutionPipeline in, int inIndex) {
+    void addIn(@NotNull ExecutionPipeline in, int inIndex) {
       inCount++;
       inDates.add(null);
       in.setCallback(data -> this.consume(data, inIndex));
     }
 
-    void addOut(ExecutionPipeline out, int outIndex) {
+    void addOut(@NotNull ExecutionPipeline out, int outIndex) {
       outCount++;
       CompletableFuture<T> x;
       if (firstOut) {
@@ -195,6 +201,7 @@ class ExecutionGraphCompiler<T> {
     this.currentPipe = new ExecutionPipeline();
   }
 
+  @NotNull
   private Map<ExecutionNode<T>, int[]> getDegrees() {
     Map<ExecutionNode<T>, int[]> degrees = new HashMap<>();
     // counting out degree is trivial
@@ -213,7 +220,7 @@ class ExecutionGraphCompiler<T> {
     return degrees;
   }
 
-  private void dfs(ExecutionGraph.Edge<T> edge, ExecutionNode<T> parent, final Deque<ExecutionNode<T>> recStack) {
+  private void dfs(@NotNull ExecutionGraph.Edge<T> edge, @Nullable ExecutionNode<T> parent, @NotNull final Deque<ExecutionNode<T>> recStack) {
     final ExecutionNode<T> node = edge.getToNode();
     recStack.push(node);
     getEdges(node).forEach(next -> {
@@ -278,7 +285,8 @@ class ExecutionGraphCompiler<T> {
     return d[0] > 1 || d[1] > 1;
   }
 
-  private ExecutionNode<T> initDegrees(ExecutionNode<T> execution) {
+  @NotNull
+  private ExecutionNode<T> initDegrees(@NotNull ExecutionNode<T> execution) {
     int[] d = degrees.get(execution);
     execution.initDegrees(d[0], d[1]);
     return execution;
@@ -329,7 +337,7 @@ class ExecutionGraphCompiler<T> {
     hubs.get(from).addOut(currentPipe, fromPort);
   }
 
-  CompiledExecutionGraph compile(String runId) {
+  @NotNull CompiledExecutionGraph compile(String runId) {
     final CompletableFuture<T> trigger = new ThreadlocalInheritingCompletableFuture<>();
     final Set<ExecutionNode<T>> startNodes = getStartNodes();
     if (startNodes.isEmpty()) {
