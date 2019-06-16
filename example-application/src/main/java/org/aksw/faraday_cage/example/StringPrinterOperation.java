@@ -1,7 +1,6 @@
 package org.aksw.faraday_cage.example;
 
 import org.aksw.faraday_cage.engine.ValidatableParameterMap;
-import org.jetbrains.annotations.NotNull;
 import org.pf4j.Extension;
 
 import java.util.List;
@@ -13,18 +12,16 @@ import java.util.List;
 @Extension
 public class StringPrinterOperation extends AbstractStringOperation {
   @Override
-  protected List<String> safeApply(@NotNull List<String> data) {
+  protected List<String> safeApply(List<String> data) {
     data.forEach(System.out::println);
     return List.of();
   }
 
-  @NotNull
   @Override
   public ValidatableParameterMap createParameterMap() {
     return ValidatableParameterMap.emptyInstance();
   }
 
-  @NotNull
   @Override
   public DegreeBounds getDegreeBounds() {
     return new DegreeBounds(1, 1, 0, 1);

@@ -2,7 +2,6 @@ package org.aksw.faraday_cage.decorator;
 
 import org.aksw.faraday_cage.engine.ExecutionNode;
 import org.apache.jena.rdf.model.Resource;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -48,18 +47,23 @@ public abstract class AbstractExecutionNodeDecorator<T> implements ExecutionNode
   }
 
   @Override
-  public void initPluginId(@NotNull Resource id) {
+  public void initPluginId(Resource id) {
     wrapped.initPluginId(id);
   }
 
   @Override
-  public final @NotNull Resource getId() {
+  public final Resource getId() {
     return wrapped.getId();
   }
 
   @Override
-  public final @NotNull Resource getType() {
+  public final Resource getType() {
     return wrapped.getType();
+  }
+
+  @Override
+  public T deepCopy(T data) {
+    return wrapped.deepCopy(data);
   }
 
   @Override

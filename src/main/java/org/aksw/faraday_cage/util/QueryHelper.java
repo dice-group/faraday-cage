@@ -4,7 +4,6 @@ import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +16,7 @@ import java.util.function.Function;
  */
 public class QueryHelper {
 
-  public static void forEachResultOf(@NotNull Query q, @NotNull Model m, @NotNull Consumer<QuerySolution> f) {
+  public static void forEachResultOf(Query q, Model m, Consumer<QuerySolution> f) {
     QueryExecution qExec = QueryExecutionFactory.create(q, m);
     ResultSet queryResults = qExec.execSelect();
     while (queryResults.hasNext()) {
@@ -27,12 +26,11 @@ public class QueryHelper {
     qExec.close();
   }
 
-  public static void forEachResultOf(String q, @NotNull Model m, @NotNull Consumer<QuerySolution> f) {
+  public static void forEachResultOf(String q, Model m, Consumer<QuerySolution> f) {
     forEachResultOf(QueryFactory.create(q), m, f);
   }
 
-  @NotNull
-  public static <V> List<V> mapResultOf(@NotNull Query q, @NotNull Model m, @NotNull Function<QuerySolution, V> f) {
+  public static <V> List<V> mapResultOf(Query q, Model m, Function<QuerySolution, V> f) {
     QueryExecution qExec = QueryExecutionFactory.create(q, m);
     ResultSet queryResults = qExec.execSelect();
     List<V> result = new ArrayList<>();
@@ -44,43 +42,36 @@ public class QueryHelper {
     return result;
   }
 
-  @NotNull
-  public static <V> List<V> mapResultOf(String q, @NotNull Model m, @NotNull Function<QuerySolution, V> f) {
+  public static <V> List<V> mapResultOf(String q, Model m, Function<QuerySolution, V> f) {
     return mapResultOf(QueryFactory.create(q), m, f);
   }
 
-  public static boolean hasEmptyResult(@NotNull Query q, @NotNull Model m) {
+  public static boolean hasEmptyResult(Query q, Model m) {
     QueryExecution qExec = QueryExecutionFactory.create(q, m);
     ResultSet queryResults = qExec.execSelect();
     return !queryResults.hasNext();
   }
 
-  @NotNull
   public static String not(String s) {
     return "NOT " + s;
   }
 
-  @NotNull
   public static String exists(String s) {
     return "EXISTS { " + s + " }";
   }
 
-  @NotNull
   public static String triple(String s, Property p, Resource o) {
     return s + " <" + p + "> <" + o + "> .";
   }
 
-  @NotNull
   public static String triple(String s, Property p, String o) {
     return s + " <" + p + "> " + o + " .";
   }
 
-  @NotNull
   public static String triple(Resource s, Property p, Resource o) {
     return "<" + s + "> <" + p + "> <" + o + "> .";
   }
 
-  @NotNull
   public static String triple(Resource s, Property p, String o) {
     return "<" + s + "> <" + p + "> " + o + " .";
   }

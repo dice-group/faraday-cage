@@ -3,26 +3,21 @@ package org.aksw.faraday_cage.vocabulary;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Vocabulary for http://w3id.org/fcage/
  */
 public class FCAGE {
 
-  @NotNull
   public static String NS = "http://w3id.org/fcage/";
 
-  @NotNull
   public static String PREFIX = "fcage";
 
   public static Property hasInput = ResourceFactory.createProperty(NS + "hasInput");
 
-  public static Property hasOutput = ResourceFactory.createProperty(NS + "hasOutput");
+  public static Property fromNode = ResourceFactory.createProperty(NS + "fromNode");
 
-  public static Property toNode = ResourceFactory.createProperty(NS + "toNode");
-
-  public static Property toPort = ResourceFactory.createProperty(NS + "toPort");
+  public static Property fromPort = ResourceFactory.createProperty(NS + "fromPort");
 
   public static Property decoratedBy = ResourceFactory.createProperty(NS + "decoratedBy");
 
@@ -30,7 +25,6 @@ public class FCAGE {
 
   public static Resource ExecutionNodeWrapper = ResourceFactory.createResource(NS + "ExecutionNodeWrapper");
 
-  @NotNull
   public static String getURI() {
     return NS;
   }

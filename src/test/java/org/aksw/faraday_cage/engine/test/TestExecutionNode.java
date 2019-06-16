@@ -6,8 +6,6 @@ import org.aksw.faraday_cage.engine.ValidatableParameterMap;
 import org.aksw.faraday_cage.vocabulary.FCAGE;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.pf4j.Extension;
 
 import java.util.List;
@@ -20,7 +18,7 @@ import java.util.function.UnaryOperator;
 public class TestExecutionNode extends AbstractParameterizedExecutionNode<String> implements TestUtil.ITestExecutionNode {
 
   @Override
-  protected List<String> safeApply(@Nullable List<String> data) {
+  protected List<String> safeApply(List<String> data) {
     if (data == null) {
       return List.of("Hello Sir!");
     }
@@ -29,12 +27,12 @@ public class TestExecutionNode extends AbstractParameterizedExecutionNode<String
   }
 
   @Override
-  protected String deepCopy(String data) {
+  public String deepCopy(String data) {
     return data;
   }
 
   @Override
-  public @NotNull Resource getType() {
+  public Resource getType() {
     return ResourceFactory.createResource(FCAGE.getURI() + "TestExecutionNode");
   }
 
@@ -43,7 +41,6 @@ public class TestExecutionNode extends AbstractParameterizedExecutionNode<String
     return new DegreeBounds(0, Integer.MAX_VALUE, 0, Integer.MAX_VALUE);
   }
 
-  @NotNull
   @Override
   public ValidatableParameterMap createParameterMap() {
     return ValidatableParameterMap.emptyInstance();

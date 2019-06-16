@@ -1,8 +1,6 @@
 package org.aksw.faraday_cage.engine;
 
 import org.apache.jena.rdf.model.Resource;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +14,6 @@ public abstract class AbstractExecutionNode<T> implements ExecutionNode<T> {
 
   private int inDegree = -1;
   private int outDegree = -1;
-  @Nullable
   private Resource id = null;
   private boolean useImplicitCloning = false;
 
@@ -45,7 +42,6 @@ public abstract class AbstractExecutionNode<T> implements ExecutionNode<T> {
 
   @Override
   public final void initDegrees(int inDegree, int outDegree) throws InvalidExecutionGraphException {
-    initPluginId(id);
     DegreeBounds degreeBounds = getDegreeBounds();
     if (inDegree < degreeBounds.minIn() || inDegree > degreeBounds.maxIn()) {
       throw new InvalidExecutionGraphException("Number of inputs for node " + id +
@@ -60,17 +56,15 @@ public abstract class AbstractExecutionNode<T> implements ExecutionNode<T> {
       this.outDegree = outDegree;
   }
 
-  public final void initPluginId(@NotNull Resource id) {
+  public final void initPluginId(Resource id) {
     this.id = id;
   }
 
-  @NotNull
   @Override
   public final Resource getId() {
     return id;
   }
 
-  @NotNull
   @Override
   public final List<T> apply(List<T> data) {
     if (!isInitialized()) {
@@ -93,8 +87,6 @@ public abstract class AbstractExecutionNode<T> implements ExecutionNode<T> {
   }
 
   protected abstract List<T> safeApply(List<T> data);
-
-  protected abstract T deepCopy(T data);
 
   final void useImplicitCloning(boolean useImplicitCloning) {
     this.useImplicitCloning = useImplicitCloning;

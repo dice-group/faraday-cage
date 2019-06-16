@@ -5,7 +5,6 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.util.FileUtils;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.topbraid.jenax.util.JenaUtil;
@@ -30,25 +29,23 @@ class ConfigurationGraphValidator {
     baseValidationModel.read(ConfigurationGraphValidator.class.getResourceAsStream("/shacl/fcage:ExecutionNode.ttl"), null, FileUtils.langTurtle);
   }
 
-  @NotNull
   private final DecoratedExecutionNodeFactory<? extends ExecutionNode<?>, ? extends ExecutionNodeWrapper<? extends ExecutionNode<?>, ?>, ?> factory;
 
   private final List<Resource> allPluginTypes;
 
-  ConfigurationGraphValidator(@NotNull DecoratedExecutionNodeFactory<? extends ExecutionNode<?>, ? extends ExecutionNodeWrapper<? extends ExecutionNode<?>, ?>, ?> factory) {
+  ConfigurationGraphValidator(DecoratedExecutionNodeFactory<? extends ExecutionNode<?>, ? extends ExecutionNodeWrapper<? extends ExecutionNode<?>, ?>, ?> factory) {
     this.factory = factory;
     this.allPluginTypes = factory.listAvailable();
     allPluginTypes.addAll(factory.getWrapperFactory().listAvailable());
   }
 
-  @NotNull
   private static Model getBaseValidationModel() {
     Model m = JenaUtil.createMemoryModel();
     m.add(baseValidationModel);
     return m;
   }
 
-  Model getValidationModelFor(@NotNull Resource id) {
+  Model getValidationModelFor(Resource id) {
     Plugin implementation;
     try {
       implementation = factory.getImplementationOf(id);
@@ -62,7 +59,7 @@ class ConfigurationGraphValidator {
     }
   }
 
-  @NotNull Model getFullValidationModel() {
+  Model getFullValidationModel() {
     final Model validationModel = getBaseValidationModel();
     allPluginTypes.stream()
       .map(this::getValidationModelFor)
@@ -70,7 +67,7 @@ class ConfigurationGraphValidator {
     return validationModel;
   }
 
-  Resource validate(@NotNull Model configGraph) {
+  Resource validate(Model configGraph) {
     final Model validationModel = getFullValidationModel();
     allPluginTypes.stream()
       .map(Resource::listProperties)
@@ -92,7 +89,7 @@ class ConfigurationGraphValidator {
     return validationReport;
   }
 
-  static boolean isConformingValidationReport(@NotNull Resource validationReport) {
+  static boolean isConformingValidationReport(Resource validationReport) {
     return Objects.nonNull(validationReport) &&
       validationReport.getProperty(SH.conforms).getBoolean();
   }

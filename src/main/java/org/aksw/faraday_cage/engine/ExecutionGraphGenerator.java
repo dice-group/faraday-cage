@@ -1,19 +1,14 @@
 package org.aksw.faraday_cage.engine;
 
 import org.aksw.faraday_cage.vocabulary.FCAGE;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.reasoner.ReasonerRegistry;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -27,15 +22,17 @@ class ExecutionGraphGenerator {
 
   private static final Logger logger = LoggerFactory.getLogger(ExecutionGraphGenerator.class);
 
-  @NotNull
-  static <T> ExecutionGraph<T> generate(@NotNull Model configGraph, @NotNull PluginFactory<? extends ExecutionNode<T>> factory) {
-    Map<Resource, ExecutionNode<T>> ExecutionNodeMap = new HashMap<>();
+  static <T> ExecutionGraph<T> generate(Model configGraph, PluginFactory<? extends ExecutionNode<T>> factory) {
+    Map<Resource, Integer> executionNodeMap = new HashMap<>();
+    List<ExecutionNode<T>> executionNodes = new ArrayList<>();
     // fill ExecutionNodeMap with mappings from plugin ids to implementations using the factory
-    ModelFactory.createInfModel(ReasonerRegistry.getTransitiveReasoner(), configGraph)
+    Set<Resource> resources = ModelFactory.createInfModel(ReasonerRegistry.getTransitiveReasoner(), configGraph)
       .listStatements(null, RDF.type, (RDFNode) null)
       .filterKeep(stmt -> stmt.getObject().asResource().hasProperty(RDFS.subClassOf, FCAGE.ExecutionNode))
       .mapWith(Statement::getSubject)
-      .forEachRemaining(nodeResource -> {
+      .toSet();
+    resources
+      .forEach(nodeResource -> {
         ExecutionNode<T> node = factory.create(nodeResource);
         if (node instanceof Parameterized) {
           ValidatableParameterMap parameterMap = ((Parameterized) node).createParameterMap();
@@ -43,59 +40,41 @@ class ExecutionGraphGenerator {
           parameterMap.init();
           ((Parameterized) node).initParameters(parameterMap);
         }
-        ExecutionNodeMap.put(nodeResource, node);
+        int i = executionNodes.size();
+        executionNodes.add(node);
+        executionNodeMap.put(nodeResource, i);
       });
-    ExecutionGraph<T> executionGraph = new ExecutionGraph<>();
-    configGraph.listStatements(null, FCAGE.hasOutput,(RDFNode) null).forEachRemaining(stmt -> {
-      List<Resource> targets;
-      Resource s = stmt.getSubject();
-      Resource o = stmt.getObject().asResource();
-      if (o.canAs(RDFList.class)) {
-        targets = o.as(RDFList.class).iterator()
-          .filterKeep(RDFNode::isResource)
-          .mapWith(RDFNode::asResource)
-          .toList();
-      } else {
-        targets = List.of(o);
-      }
-
-      generateEdgesForResource(executionGraph, s, targets, ExecutionNodeMap);
-    });
-    return executionGraph;
-  }
-
-
-  private static  <T> void generateEdgesForResource(@NotNull ExecutionGraph<T> executionGraph, Resource node, @NotNull List<Resource> targets, @NotNull Map<Resource, ExecutionNode<T>> ExecutionNodeMap) {
-    AtomicInteger i = new AtomicInteger(0);
-    Map<Pair<Resource, Resource>, Integer> lastToPortMap = new HashMap<>();
-    targets.forEach(r -> {
-      if (r.isAnon() && r.hasProperty(FCAGE.toNode) && r.hasProperty(FCAGE.toPort)) {
-        try {
-          int toPort = r.getProperty(FCAGE.toPort).getInt();
-          Resource toNode = r.getProperty(FCAGE.toNode).getResource();
-          executionGraph.addEdge(ExecutionNodeMap.get(node), i.getAndIncrement(), ExecutionNodeMap.get(toNode), toPort);
-        } catch (@NotNull LiteralRequiredException | NumberFormatException e) {
-          throw new RuntimeException("Error in definition of " + node + "! Invalid value \"" + r.getProperty(FCAGE.toPort).getObject() + "\" for " + FCAGE.toPort + ", allowed range is integer literals", e);
-        } catch (ResourceRequiredException e) {
-          throw new RuntimeException("Error in definition of " + node + "! Invalid value \"" + r.getProperty(FCAGE.toNode).getObject() + "\" for " + FCAGE.toNode + ", allowed range is resources", e);
+    AdjacencyMatrix adj = new AdjacencyMatrix(executionNodes.size());
+    resources.stream()
+      .filter(s -> s.hasProperty(FCAGE.hasInput))
+      .forEach(s -> {
+        int toNode = executionNodeMap.get(s);
+        Resource o = s.getProperty(FCAGE.hasInput).getObject().asResource();
+        if (o.canAs(RDFList.class)) {
+          AtomicInteger i = new AtomicInteger(0);
+          o.as(RDFList.class).iterator()
+            .filterKeep(RDFNode::isResource)
+            .mapWith(RDFNode::asResource)
+            .forEachRemaining(r -> {
+              if (r.isAnon()) {
+                try {
+                  int fromPort = r.getProperty(FCAGE.fromPort).getInt();
+                  int fromNode = executionNodeMap.get(r.getProperty(FCAGE.fromNode).getResource());
+                  adj.addEdge(fromNode, fromPort, toNode, i.getAndIncrement());
+                } catch (LiteralRequiredException | NumberFormatException e) {
+                  throw new RuntimeException("Error in definition of " + s + "! Invalid value \"" + r.getProperty(FCAGE.fromPort).getObject() + "\" for " + FCAGE.fromPort + ", allowed range is integer literals", e);
+                } catch (ResourceRequiredException e) {
+                  throw new RuntimeException("Error in definition of " + s + "! Invalid value \"" + r.getProperty(FCAGE.fromNode).getObject() + "\" for " + FCAGE.fromPort + ", allowed range is resources", e);
+                }
+              } else {
+                adj.addEdge(executionNodeMap.get(r), (byte) 0, executionNodeMap.get(s), i.getAndIncrement());
+              }
+            });
+        } else {
+          adj.addEdge(executionNodeMap.get(o), (byte) 0, executionNodeMap.get(s), (byte) 0);
         }
-      } else if (r.hasProperty(FCAGE.hasInput)) {
-        Resource inputs = r.getPropertyResourceValue(FCAGE.hasInput);
-        int toPort = 0;
-        if (inputs.canAs(RDFList.class)) {
-          ImmutablePair<Resource, Resource> con = new ImmutablePair<>(node, r);
-          Integer lastToPort = lastToPortMap.getOrDefault(con, 0);
-          toPort = inputs.as(RDFList.class).indexOf(node, lastToPort);
-          if (toPort == -1) {
-            throw new RuntimeException("Could not find an occurrence of " + node + " in input declaration " + r);
-          }
-          lastToPortMap.put(con, toPort+1);
-        }
-        executionGraph.addEdge(ExecutionNodeMap.get(node), i.getAndIncrement(), ExecutionNodeMap.get(r), toPort);
-      } else {
-        executionGraph.addEdge(ExecutionNodeMap.get(node), i.getAndIncrement(), ExecutionNodeMap.get(r), 0);
-      }
-    });
+      });
+    return adj.compileCanonicalForm(executionNodes);
   }
 
 }

@@ -2,7 +2,6 @@ package org.aksw.faraday_cage.engine;
 
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.vocabulary.RDF;
-import org.jetbrains.annotations.NotNull;
 import org.pf4j.ExtensionPoint;
 
 /**
@@ -10,9 +9,9 @@ import org.pf4j.ExtensionPoint;
  */
 public interface Plugin extends ExtensionPoint {
 
-  @NotNull Resource getId();
+  Resource getId();
 
-  static Resource getImplementationType(@NotNull Resource executionId) {
+  static Resource getImplementationType(Resource executionId) {
     Resource implementation = executionId.getPropertyResourceValue(RDF.type);
     if (implementation == null) {
       throw new RuntimeException("Implementation type of " + executionId + " is not specified!");
@@ -29,7 +28,7 @@ public interface Plugin extends ExtensionPoint {
    *
    * @return  RDF URI resource identifying the implementation class
    */
-  @NotNull Resource getType();
+  Resource getType();
 
   /**
    * Get initialization status
@@ -37,7 +36,7 @@ public interface Plugin extends ExtensionPoint {
    */
   boolean isInitialized();
 
-  void initPluginId(@NotNull Resource id);
+  void initPluginId(Resource id);
 
 
 }

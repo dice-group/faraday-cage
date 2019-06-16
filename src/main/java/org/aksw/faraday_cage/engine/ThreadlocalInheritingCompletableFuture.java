@@ -1,7 +1,5 @@
 package org.aksw.faraday_cage.engine;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
@@ -31,20 +29,17 @@ public class ThreadlocalInheritingCompletableFuture<T> extends CompletableFuture
    * @param <U> the type of the value
    * @return the completed CompletableFuture
    */
-  @NotNull
   public static <U> CompletableFuture<U> completedFuture(U value) {
     ThreadlocalInheritingCompletableFuture<U> x = new ThreadlocalInheritingCompletableFuture<>();
     x.complete(value);
     return x;
   }
 
-  @NotNull
   @Override
   public Executor defaultExecutor() {
     return EXECUTOR;
   }
 
-  @NotNull
   public <U> CompletableFuture<U> newIncompleteFuture() {
     return new ThreadlocalInheritingCompletableFuture<>();
   }
