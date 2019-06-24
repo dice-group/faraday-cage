@@ -118,6 +118,11 @@ public class FaradayCageContext<U extends ExecutionNode<T>, V extends ExecutionN
     time.split();
     logger.info("Configuration shape validated using SHACL after {}ms.", time.getSplitTime());
     ExecutionGraph<T> executionGraph = generateExecutionGraphFromConfiguration(configModel, decoratedFactory);
+//    try {
+//      ExecutionGraphSerializer.serialize(executionGraph).write(new FileWriter("./test.ttl"), "TURTLE");
+//    } catch (IOException e) {
+//      e.printStackTrace();
+//    }
     time.split();
     logger.info("Execution graph built after {}ms.", time.getSplitTime());
     CompiledExecutionGraph compiled = CompiledExecutionGraph.of(executionGraph);

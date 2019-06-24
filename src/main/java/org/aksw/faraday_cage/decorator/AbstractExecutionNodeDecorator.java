@@ -22,11 +22,6 @@ public abstract class AbstractExecutionNodeDecorator<T> implements ExecutionNode
   }
 
   @Override
-  public final boolean usesImplicitCloning() {
-    return wrapped.usesImplicitCloning();
-  }
-
-  @Override
   public final DegreeBounds getDegreeBounds() {
     return wrapped.getDegreeBounds();
   }

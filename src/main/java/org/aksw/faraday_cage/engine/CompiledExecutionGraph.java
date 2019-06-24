@@ -40,8 +40,8 @@ public class CompiledExecutionGraph implements Runnable {
       if (inDegree == 0) {
         handle = trigger;
       } else {
-        handle = futures.get(currentRow[2]);
-        for (int k = 1; k < inDegree; k++) {
+        handle = ThreadlocalInheritingCompletableFuture.completedFuture(new ArrayList<>(inDegree));
+        for (int k = 0; k < inDegree; k++) {
           final int l = k;
           handle = handle.thenCombine(futures.get(currentRow[2 + l * 2]), (a, b) -> {
             a.add(b.get(currentRow[2 + l * 2 + 1]));

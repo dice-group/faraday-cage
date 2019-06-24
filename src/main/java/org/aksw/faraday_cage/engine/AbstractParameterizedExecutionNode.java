@@ -16,13 +16,6 @@ public abstract class AbstractParameterizedExecutionNode<T> extends AbstractExec
 
   private ValidatableParameterMap parameterMap = null;
 
-  public static abstract class WithImplicitCloning<T> extends AbstractParameterizedExecutionNode<T> {
-
-    public WithImplicitCloning() {
-      this.useImplicitCloning(true);
-    }
-
-  }
 
   @Override
   public void initParameters(ValidatableParameterMap parameterMap) {

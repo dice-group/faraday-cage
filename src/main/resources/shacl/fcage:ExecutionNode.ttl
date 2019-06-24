@@ -44,24 +44,6 @@ fcage:InputDeclarationPortExplicitList
     sh:property [ sh:path fcage:fromPort ; sh:datatype xsd:integer ; sh:minCount 1 ; sh:maxCount 1 ] ;
     sh:property [ sh:path fcage:fromNode ; sh:class fcage:ExecutionNode ; sh:minCount 1 ; sh:maxCount 1 ] ;
   ] ;
-  sh:sparql [
-    sh:message "fromPort values for the same fromNode need to be distinct!" ;
-    sh:prefixes fcage: ;
-    sh:select """
-      SELECT $this ?value
-      WHERE {
-        {
-          SELECT $this ?value ( COUNT(?x) AS ?countX )
-          WHERE {
-            $this $PATH ?value .
-            ?value fcage:fromNode^fcage:fromNode/fcage:fromPort ?x .
-          }
-          GROUP BY $this ?value ?x
-        }
-        FILTER( ?countX > 1 )
-      }
-    """ ;
-  ] ;
 .
 
 fcage:InputDeclarationValidator
@@ -69,138 +51,10 @@ fcage:InputDeclarationValidator
   sh:targetClass fcage:ExecutionNode ;
   sh:xone (
     [ sh:property [ sh:path fcage:hasInput ; sh:maxCount 0 ] ] # exactly no Input
-    [ sh:property fcage:InputDeclarationPresent, fcage:InputDeclarationSingle ] # Input-only single-implicit,
+    [ sh:property fcage:InputDeclarationPresent, fcage:InputDeclarationSingle ] # Input-single port-implicit,
     [ sh:property fcage:InputDeclarationPresent, fcage:InputDeclarationList ] # Input-list port-implicit,
     [ sh:property fcage:InputDeclarationPresent, fcage:InputDeclarationPortExplicitList ] # Input-only port-explicit
   ) ;
   sh:message "Invalid Input declaration! Please consult the documentation on how to declare Inputs." ;
 .
-
-fcage:OutputDeclarationAbsent
-  a sh:PropertyShape ;
-  sh:maxCount 0 ;
-  sh:path fcage:hasOutput ;
-.
-
-fcage:OutputDeclarationPresent
-  a sh:PropertyShape ;
-  sh:minCount 1 ;
-  sh:maxCount 1 ;
-  sh:path fcage:hasOutput ;
-.
-
-fcage:OutputDeclarationList
-  a sh:PropertyShape ;
-  sh:path ( fcage:hasOutput [ sh:zeroOrMorePath rdf:rest ] rdf:first ) ;
-  sh:class fcage:ExecutionNode ;
-  sh:minCount 1 ;
-  sh:sparql [
-    sh:message "Explicit Outputs must be subset of implicit Outputs!" ;
-    sh:prefixes fcage: ;
-    sh:select """
-      SELECT $this ?value
-      WHERE {
-        $this $PATH ?value .
-        FILTER (
-           !EXISTS {
-             ?value fcage:hasInput/(rdf:rest*/rdf:first)? $this .
-           }
-        )
-      }
-    """ ;
-  ] ;
-  sh:sparql [
-    sh:message "Number of explicit Outputs must match number of implicit Outputs!" ;
-    sh:prefixes fcage: ;
-    sh:select """
-      SELECT $this ?value
-      WHERE {
-      $this $PATH ?value .
-        {
-          SELECT $this ( COUNT(?value) AS ?countA )
-          WHERE { $this $PATH ?value . }
-          GROUP BY $this
-        }
-
-        {
-          SELECT $this ( COUNT(?value) AS ?countB )
-          WHERE { $this ^fcage:hasInput|(^rdf:first^rdf:rest*)/^fcage:hasInput ?value . }
-          GROUP BY $this
-        }
-      FILTER( ?countA != ?countB )
-      }
-    """ ;
-  ] ;
-.
-
-fcage:OutputDeclarationMixed
-  a sh:PropertyShape ;
-  sh:path [ sh:alternativePath (
-    [ sh:inversePath fcage:hasInput ]
-    ( [ sh:inversePath rdf:first ] [ sh:inversePath [ sh:zeroOrMorePath rdf:rest ] ] [ sh:inversePath fcage:hasInput ] )
-  ) ] ;
-  sh:class fcage:ExecutionNode ;
-  sh:minCount 1 ;
-  sh:sparql [
-    sh:message "Implicit Outputs must be subset of explicit Outputs!" ;
-    sh:prefixes fcage: ;
-    sh:select """
-      SELECT $this ?value
-      WHERE {
-        $this $PATH ?value .
-        FILTER (
-             !EXISTS {
-               $this fcage:hasOutput/(rdf:rest*/rdf:first)? ?value .
-             }
-        )
-      }
-    """ ;
-  ] ;
-.
-
-fcage:OutputDeclarationSingleImplicitSingle
-  a sh:PropertyShape ;
-  sh:path [ sh:inversePath fcage:hasInput ] ;
-  sh:class fcage:ExecutionNode ;
-  sh:minCount 1 ;
-  sh:maxCount 1 ;
-.
-
-fcage:OutputDeclarationSingleImplicitList
-  a sh:PropertyShape ;
-  sh:path [ sh:inversePath ( rdf:first [ sh:zeroOrMorePath rdf:rest ] fcage:hasInput ) ] ;
-  sh:class fcage:ExecutionNode ;
-  sh:minCount 1 ;
-  sh:maxCount 1 ;
-.
-
-fcage:OutputDeclarationImplicitPortExplicitList
-  a sh:PropertyShape ;
-  sh:path ( [ sh:inversePath fcage:fromNode ] [ sh:inversePath rdf:first ] [ sh:inversePath [ sh:zeroOrMorePath rdf:rest ] ] [ sh:inversePath fcage:hasInput ] ) ;
-  sh:class fcage:ExecutionNode ;
-  sh:minCount 1 ;
-.
-
-fcage:NoImplicitOutputDeclarations
-  sh:path [ sh:alternativePath ( [ sh:inversePath fcage:fromNode ]
-                                 [ sh:inversePath fcage:hasInput ]
-                                 [ sh:inversePath ( rdf:first [ sh:zeroOrMorePath rdf:rest ] fcage:hasInput ) ]
-          ) ];
-  sh:maxCount 0 ;
-.
-
-fcage:OutputDeclarationValidator
-  a sh:NodeShape ;
-  sh:targetClass fcage:ExecutionNode ;
-  sh:xone (
-      # execution nodes have either explicit Outputs (declared within a list)...
-    [ sh:property fcage:OutputDeclarationPresent, fcage:OutputDeclarationList, fcage:OutputDeclarationMixed ] # or implicit Outputs from various sources...
-    [ sh:property fcage:OutputDeclarationAbsent, fcage:OutputDeclarationSingleImplicitSingle ] # or implicit Outputs from various sources...
-    [ sh:property fcage:OutputDeclarationAbsent, fcage:OutputDeclarationSingleImplicitList ] # or implicit Outputs from various sources...
-    [ sh:property fcage:OutputDeclarationAbsent, fcage:OutputDeclarationImplicitPortExplicitList ]
-    [ sh:property fcage:OutputDeclarationAbsent, fcage:NoImplicitOutputDeclarations ] # or no Outputs at all.
-  ) ;
-   sh:message "Invalid Output declaration! Please consult the documentation on how to declare Outputs." ;
-.
-
 

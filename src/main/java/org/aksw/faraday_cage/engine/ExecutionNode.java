@@ -46,8 +46,6 @@ public interface ExecutionNode<T> extends ExtensionPoint, Plugin {
 
   }
 
-  boolean usesImplicitCloning();
-
   default DegreeBounds getDegreeBounds() {
     return new DegreeBounds(0,1,0,1);
   }

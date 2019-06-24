@@ -2,7 +2,6 @@ package org.aksw.faraday_cage.engine;
 
 import org.apache.jena.rdf.model.Resource;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,20 +14,6 @@ public abstract class AbstractExecutionNode<T> implements ExecutionNode<T> {
   private int inDegree = -1;
   private int outDegree = -1;
   private Resource id = null;
-  private boolean useImplicitCloning = false;
-
-  public static abstract class WithImplicitCloning<T> extends AbstractExecutionNode<T> {
-
-    public WithImplicitCloning() {
-      this.useImplicitCloning(true);
-    }
-
-  }
-
-  @Override
-  public final boolean usesImplicitCloning() {
-    return useImplicitCloning;
-  }
 
   @Override
   public final int getInDegree() {
@@ -47,8 +32,7 @@ public abstract class AbstractExecutionNode<T> implements ExecutionNode<T> {
       throw new InvalidExecutionGraphException("Number of inputs for node " + id +
         " is " + inDegree + ", but must be in [" + degreeBounds.minIn() + ", " + degreeBounds.maxIn() + "]!");
     }
-    if (outDegree < degreeBounds.minOut() ||
-      (!useImplicitCloning || (degreeBounds.maxOut() != 1)) && (outDegree > degreeBounds.maxOut())) {
+    if (outDegree < degreeBounds.minOut() || outDegree > degreeBounds.maxOut()) {
       throw new InvalidExecutionGraphException("Number of outputs for node " + id +
         " is " + outDegree + ", but must be in [" + degreeBounds.minOut() + ", " + degreeBounds.maxOut() + "]!");
     }
@@ -70,15 +54,7 @@ public abstract class AbstractExecutionNode<T> implements ExecutionNode<T> {
     if (!isInitialized()) {
       throw new RuntimeException(this.getClass().getCanonicalName() + " must be initialized before calling apply()!");
     }
-    List<T> result = new ArrayList<>(safeApply(data));
-    // implicit cloning implemented here
-    if (useImplicitCloning
-      && outDegree > result.size() && result.size() == 1 && getDegreeBounds().maxOut() == 1) {
-      for (int i = 0; i < outDegree - 1; i++) {
-        result.add(deepCopy(result.get(0)));
-      }
-    }
-    return result;
+    return safeApply(data);
   }
 
   @Override
@@ -87,9 +63,5 @@ public abstract class AbstractExecutionNode<T> implements ExecutionNode<T> {
   }
 
   protected abstract List<T> safeApply(List<T> data);
-
-  final void useImplicitCloning(boolean useImplicitCloning) {
-    this.useImplicitCloning = useImplicitCloning;
-  }
 
 }
