@@ -132,16 +132,18 @@ public class ValidatableParameterMap {
     Deque<RDFNode> stack = new ArrayDeque<>();
     Set<Resource> visited = new HashSet<>();
     rootMap.put(p.inModel(backingModel), node.inModel(backingModel));
-    stack.push(node);
-    while (!stack.isEmpty()) {
-      RDFNode n = stack.pop();
-      if (n.isResource() && !visited.contains(n.asResource())) {
-        Resource r = n.asResource();
-        r.listProperties().forEachRemaining(stmt -> {
-          backingModel.add(stmt);
-          stack.push(stmt.getObject());
-        });
-        visited.add(r);
+    if (node.getModel() != null) {
+      stack.push(node);
+      while (!stack.isEmpty()) {
+        RDFNode n = stack.pop();
+        if (n.isResource() && !visited.contains(n.asResource())) {
+          Resource r = n.asResource();
+          r.listProperties().forEachRemaining(stmt -> {
+            backingModel.add(stmt);
+            stack.push(stmt.getObject());
+          });
+          visited.add(r);
+        }
       }
     }
     return this;
@@ -214,6 +216,29 @@ public class ValidatableParameterMap {
       throw new IllegalStateException("This ParameterMap has not yet been initialized, reading " +
         "operations are therefore prohibited!");
     }
+  }
+
+  public Resource createResource() {
+    checkWritable();
+    return backingModel.createResource();
+  }
+
+  public Resource createResource(String url) {
+    checkWritable();
+    return backingModel.createResource(url);
+  }
+
+  public Literal createLiteral(String s) {
+    checkWritable();
+    return backingModel.createLiteral(s);
+  }
+
+  public int hashCode() {
+    return rootMap.hashCode();
+  }
+
+  public boolean equals(Object o) {
+    return rootMap.equals(o);
   }
 
 }

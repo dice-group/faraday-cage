@@ -28,4 +28,12 @@ public abstract class AbstractParameterizedExecutionNodeDecorator<V extends Para
     return wrapped.getParameterMap();
   }
 
+  public V getWrapped() {
+    if (wrapped instanceof AbstractParameterizedExecutionNodeDecorator) {
+      return ((AbstractParameterizedExecutionNodeDecorator<V,T>) wrapped).getWrapped();
+    } else {
+      return wrapped;
+    }
+  }
+
 }

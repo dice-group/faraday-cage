@@ -1,5 +1,6 @@
 package org.aksw.faraday_cage.engine;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -7,20 +8,27 @@ import java.util.List;
  */
 public class ExecutionGraph<T> {
 
-  protected final List<ExecutionNode<T>> ops;
-  protected final short[][] entries;
+  protected List<ExecutionNode<T>> ops;
+  protected short[][] entries;
+
+  public ExecutionGraph(int size) {
+    this.ops = new ArrayList<>(size);
+    for (int i = 0; i < size; i++) ops.add(null);
+    this.entries = new short[size][2];
+  }
 
   public ExecutionGraph(List<ExecutionNode<T>> ops) {
     this.ops = ops;
     this.entries = new short[ops.size()][2];
   }
 
-  public void addRow(short i, short[] row) {
+  public void addRow(short i, ExecutionNode<T> op, short[] row) {
     entries[i] = row;
+    ops.set(i,op);
   }
 
   public int getSize() {
-    return ops.size();
+    return entries.length;
   }
 
   public ExecutionNode<T> getNode(int i) {

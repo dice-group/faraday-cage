@@ -66,8 +66,12 @@ public abstract class AbstractExecutionNodeDecorator<T> implements ExecutionNode
     return wrapped.isInitialized();
   }
 
-  protected final ExecutionNode<T> getWrapped() {
-    return wrapped;
+  public ExecutionNode<T> getWrapped() {
+    if (wrapped instanceof AbstractExecutionNodeDecorator) {
+      return ((AbstractExecutionNodeDecorator<T>) wrapped).getWrapped();
+    } else {
+      return wrapped;
+    }
   }
 
 }

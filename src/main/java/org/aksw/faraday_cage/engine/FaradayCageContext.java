@@ -99,6 +99,7 @@ public class FaradayCageContext<U extends ExecutionNode<T>, V extends ExecutionN
     logger.info("Starting execution...");
     time.start();
     compiledExecutionGraph.run();
+    compiledExecutionGraph.join();
     time.split();
     logger.info("Execution finished after {}ms", time.getSplitTime());
   }

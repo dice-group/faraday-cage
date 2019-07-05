@@ -61,19 +61,19 @@ class AdjacencyMatrix {
       }
     }
 
-    ExecutionGraph<T> executionGraph = new ExecutionGraph<>(canonicalOps);
-    for (short i = 0; i < rows.length; i++) {
+    ExecutionGraph<T> executionGraph = new ExecutionGraph<>(canonicalOps.size());
+    for (short i = (short)(rows.length - 1); i >= 0; i--) {
       short[] columnRow = new short[2+inDegrees[i]*2];
       columnRow[0] = inDegrees[i];
       columnRow[1] = outDegrees[i];
       for (short j = 0; j < rows.length; j++) {
         short n = (short) canonicalForm.rows[j][i].length;
         for (short k = 0; k < n; k+=2) {
-          columnRow[2+canonicalForm.rows[j][i][k+1]*2] = j;
+          columnRow[2+canonicalForm.rows[j][i][k+1]*2] = (short)(rows.length - j -1);
           columnRow[2+canonicalForm.rows[j][i][k+1]*2+1] = canonicalForm.rows[j][i][k];
         }
       }
-      executionGraph.addRow(i, columnRow);
+      executionGraph.addRow((short)(rows.length - i -1), canonicalOps.get(i), columnRow);
     }
     logger.info("\n{}", executionGraph);
     return executionGraph;

@@ -17,7 +17,7 @@ public class CompiledExecutionGraph implements Runnable {
 
   private String runId;
   private CompletableFuture trigger;
-  private CompletableFuture joiner;
+  private CompletableFuture<Void> joiner;
 
   private static final Logger logger = LoggerFactory.getLogger(CompiledExecutionGraph.class);
 
@@ -27,10 +27,9 @@ public class CompiledExecutionGraph implements Runnable {
 
   public static <T> CompiledExecutionGraph of(ExecutionGraph<T> executionGraph, String runId) {
     final CompletableFuture<List<T>> trigger = new ThreadlocalInheritingCompletableFuture<>();
-    CompletableFuture<List<T>> joiner= ThreadlocalInheritingCompletableFuture.completedFuture(null);
+    CompletableFuture<Void> joiner= ThreadlocalInheritingCompletableFuture.completedFuture(null);
     final List<CompletableFuture<List<T>>> futures = new ArrayList<>(executionGraph.getSize());
-    for (int i = 0; i < executionGraph.getSize(); i++) futures.add(null);
-    for (int i = executionGraph.getSize()-1; i >= 0; i--) {
+    for (int i = 0; i < executionGraph.getSize(); i++) {
       ExecutionNode<T> currentNode = executionGraph.getNode(i);
       short[] currentRow = executionGraph.getRow(i);
       int inDegree = currentRow[0];
@@ -44,7 +43,7 @@ public class CompiledExecutionGraph implements Runnable {
         for (int k = 0; k < inDegree; k++) {
           final int l = k;
           handle = handle.thenCombine(futures.get(currentRow[2 + l * 2]), (a, b) -> {
-            a.add(b.get(currentRow[2 + l * 2 + 1]));
+            a.add(currentNode.deepCopy(b.get(currentRow[2 + l * 2 + 1])));
             return a;
           });
         }
@@ -54,14 +53,12 @@ public class CompiledExecutionGraph implements Runnable {
           return currentNode.apply(l).stream().map(currentNode::deepCopy).collect(Collectors.toList());
         }
       );
-      futures.set(i, currentFuture);
-      if (outDegree == 0) {
-        joiner = joiner.thenCombine(currentFuture, (a, b) -> b);
-      }
+      futures.add(currentFuture);
+      joiner = joiner.thenCombine(currentFuture, (a, b) -> null);
     }
-    //    if (startPipelines.isEmpty() && startHubs.isEmpty()) {
-    //      throw new InvalidExecutionGraphException("No root nodes have been detected. Please supply a non-empty acyclic configuration graph!");
-    //    }
+//        if (startPipelines.isEmpty() && startHubs.isEmpty()) {
+//          throw new InvalidExecutionGraphException("No root nodes have been detected. Please supply a non-empty acyclic configuration graph!");
+//        }
     return new CompiledExecutionGraph(runId, trigger, joiner);
   }
 
@@ -79,6 +76,9 @@ public class CompiledExecutionGraph implements Runnable {
   public void run() {
     FaradayCageContext.setRunId(runId);
     trigger.complete(new ArrayList<>());
+  }
+
+  public void join() {
     joiner.join();
     if (joiner.isCompletedExceptionally()) {
       try {
@@ -91,6 +91,10 @@ public class CompiledExecutionGraph implements Runnable {
 
   public void andThen(Runnable r) {
     joiner.thenRun(r);
+  }
+
+  public CompletableFuture<Void> getCompletionStage() {
+    return joiner;
   }
 
 
