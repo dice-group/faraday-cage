@@ -19,7 +19,7 @@ public class ExecutionGraphSerializer {
     int n = executionGraph.getSize();
     Model serialized = ModelFactory.createDefaultModel();
     for (int i = 0; i < n; i++) {
-      short[] row = executionGraph.getRow(i);
+      int[] row = executionGraph.getRow(i);
       Resource[] inputDefs = new Resource[row[0]];
       if (row[0] > 0) {
         for (int j = 2; j < 2 + row[0] * 2; j+=2) {

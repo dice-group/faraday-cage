@@ -9,20 +9,15 @@ import java.util.List;
 public class ExecutionGraph<T> {
 
   protected List<ExecutionNode<T>> ops;
-  protected short[][] entries;
+  protected int[][] entries;
 
   public ExecutionGraph(int size) {
     this.ops = new ArrayList<>(size);
     for (int i = 0; i < size; i++) ops.add(null);
-    this.entries = new short[size][2];
+    this.entries = new int[size][2];
   }
 
-  public ExecutionGraph(List<ExecutionNode<T>> ops) {
-    this.ops = ops;
-    this.entries = new short[ops.size()][2];
-  }
-
-  public void addRow(short i, ExecutionNode<T> op, short[] row) {
+  public void addRow(int i, ExecutionNode<T> op, int[] row) {
     entries[i] = row;
     ops.set(i,op);
   }
@@ -35,7 +30,7 @@ public class ExecutionGraph<T> {
     return ops.get(i);
   }
 
-  public short[] getRow(int i) {
+  public int[] getRow(int i) {
     return entries[i];
   }
 

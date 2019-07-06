@@ -31,7 +31,7 @@ public class CompiledExecutionGraph implements Runnable {
     final List<CompletableFuture<List<T>>> futures = new ArrayList<>(executionGraph.getSize());
     for (int i = 0; i < executionGraph.getSize(); i++) {
       ExecutionNode<T> currentNode = executionGraph.getNode(i);
-      short[] currentRow = executionGraph.getRow(i);
+      int[] currentRow = executionGraph.getRow(i);
       int inDegree = currentRow[0];
       int outDegree = currentRow[1];
       currentNode.initDegrees(currentRow[0], currentRow[1]);
