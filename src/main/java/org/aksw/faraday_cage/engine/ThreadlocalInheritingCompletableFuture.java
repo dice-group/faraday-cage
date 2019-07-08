@@ -9,7 +9,7 @@ import java.util.concurrent.Executor;
 public class ThreadlocalInheritingCompletableFuture<T> extends CompletableFuture<T> {
 
   private static final int PARALLELISM;
-  private static final String DEER_PARALLELISM_LEVEL = "deerParallelismLevel";
+  private static final String DEER_PARALLELISM_LEVEL = "org.aksw.deer.parallelism";
 
   static {
     int parallelism = Runtime.getRuntime().availableProcessors();
@@ -19,7 +19,7 @@ public class ThreadlocalInheritingCompletableFuture<T> extends CompletableFuture
     PARALLELISM = parallelism;
   }
 
-  private static final Executor EXECUTOR = ThreadlocalInheritingThreadPoolExecutor.get(PARALLELISM);
+  private static final ThreadLocal<Executor> executors = ThreadLocal.withInitial(()->ThreadlocalInheritingThreadPoolExecutor.get(PARALLELISM));
 
   /**
    * Returns a new CompletableFuture that is already completed with
@@ -37,7 +37,7 @@ public class ThreadlocalInheritingCompletableFuture<T> extends CompletableFuture
 
   @Override
   public Executor defaultExecutor() {
-    return EXECUTOR;
+    return executors.get();
   }
 
   public <U> CompletableFuture<U> newIncompleteFuture() {
