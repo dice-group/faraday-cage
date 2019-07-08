@@ -19,8 +19,8 @@ public class ThreadlocalInheritingCompletableFuture<T> extends CompletableFuture
     PARALLELISM = parallelism;
   }
 
-  private static final ThreadLocal<Executor> executors = ThreadLocal.withInitial(()->ThreadlocalInheritingThreadPoolExecutor.get(PARALLELISM));
-
+//  private static final ThreadLocal<Executor> executors = ThreadLocal.withInitial(()->ThreadlocalInheritingThreadPoolExecutor.get(PARALLELISM));
+  private static final Executor executor = ThreadlocalInheritingThreadPoolExecutor.get(PARALLELISM);
   /**
    * Returns a new CompletableFuture that is already completed with
    * the given value.
@@ -37,7 +37,7 @@ public class ThreadlocalInheritingCompletableFuture<T> extends CompletableFuture
 
   @Override
   public Executor defaultExecutor() {
-    return executors.get();
+    return executor;
   }
 
   public <U> CompletableFuture<U> newIncompleteFuture() {
