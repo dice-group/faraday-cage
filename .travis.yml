@@ -1,7 +1,7 @@
 sudo: false
 language: java
 jdk:
-- openjdk9
+- openjdk11
 install:
 - mvn install -U -Dmaven.test.skip=true
 script:

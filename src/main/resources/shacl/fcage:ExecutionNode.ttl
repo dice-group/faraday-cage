@@ -31,12 +31,14 @@ fcage:InputDeclarationSingle
 .
 
 fcage:InputDeclarationList
+  a sh:PropertyShape ;
   sh:minCount 1 ;
   sh:path ( fcage:hasInput [ sh:zeroOrMorePath rdf:rest ] rdf:first ) ;
   sh:class fcage:ExecutionNode ;
 .
 
 fcage:InputDeclarationPortExplicitList
+  a sh:PropertyShape ;
   sh:minCount 1 ;
   sh:path ( fcage:hasInput [ sh:zeroOrMorePath rdf:rest ] rdf:first ) ;
   sh:node [
