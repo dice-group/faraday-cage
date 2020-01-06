@@ -1,19 +1,24 @@
 @prefix : <urn:example:fcage-tutorial/> .
 @prefix exapp: <urn:example:example-application/> .
 @prefix fcage: <http://w3id.org/fcage/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+exapp:StringProviderOperation rdfs:subClassOf fcage:ExecutionNode .
+exapp:SubStringOperation rdfs:subClassOf fcage:ExecutionNode .
+exapp:StringPrinterOperation rdfs:subClassOf fcage:ExecutionNode .
 
 :input
   a exapp:StringProviderOperation ;
-  fcage:hasOutput :substring ;
   exapp:inputString "Hello World 123 foo bar" ;
 .
 
 :substring
   a exapp:SubStringOperation ;
-  fcage:hasOutput :print ;
+  fcage:hasInput :input ;
   exapp:length 11 ;
 .
 
 :print
   a exapp:StringPrinterOperation ;
+  fcage:hasInput :substring;
 .

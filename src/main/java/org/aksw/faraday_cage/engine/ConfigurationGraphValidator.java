@@ -72,6 +72,10 @@ class ConfigurationGraphValidator {
     allPluginTypes.stream()
       .map(Resource::listProperties)
       .forEach(configGraph::add);
+//    ModelFactory.createInfModel(ReasonerRegistry.getTransitiveReasoner(), configGraph)
+//      .listStatements(null, RDF.type, (RDFNode) null)
+//      .filterKeep(stmt -> stmt.getObject().asResource().hasProperty(RDFS.subClassOf, FCAGE.ExecutionNode))
+//      .forEachRemaining(validationModel::add);
     Resource validationReport = ValidationUtil.validateModel(configGraph, validationModel, true);
 //    Supplier<String> traceInfo = () -> {
 //      ByteArrayOutputStream stream = new ByteArrayOutputStream();

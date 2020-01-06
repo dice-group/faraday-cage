@@ -9,7 +9,7 @@ import org.apache.jena.rdf.model.Resource;
 public abstract class AbstractStringOperation extends AbstractParameterizedExecutionNode<String> implements StringOperation {
 
   @Override
-  protected String deepCopy(String data) {
+  public String deepCopy(String data) {
     // String in Java is immutable, so no need to make a deep copy
     return data;
   }

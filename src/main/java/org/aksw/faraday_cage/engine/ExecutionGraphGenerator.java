@@ -14,9 +14,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * Generate an ExecutionGraph from a specification in RDF.
  *
- * Nodes may be connected in three possible ways:
- * output-only port-explicit, output-input port-implicit, output-only single-implicit
- *
  */
 class ExecutionGraphGenerator {
 
@@ -67,11 +64,11 @@ class ExecutionGraphGenerator {
                   throw new RuntimeException("Error in definition of " + s + "! Invalid value \"" + r.getProperty(FCAGE.fromNode).getObject() + "\" for " + FCAGE.fromPort + ", allowed range is resources", e);
                 }
               } else {
-                adj.addEdge(executionNodeMap.get(r), (byte) 0, executionNodeMap.get(s), i.getAndIncrement());
+                adj.addEdge(executionNodeMap.get(r), 0, executionNodeMap.get(s), i.getAndIncrement());
               }
             });
         } else {
-          adj.addEdge(executionNodeMap.get(o), (byte) 0, executionNodeMap.get(s), (byte) 0);
+          adj.addEdge(executionNodeMap.get(o), 0, executionNodeMap.get(s), 0);
         }
       });
     return adj.compileCanonicalForm(executionNodes);
