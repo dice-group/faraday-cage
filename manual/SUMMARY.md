@@ -14,7 +14,7 @@
 * [Configuration Graph](./concepts.md#config)
 
 
-### configuration Vocabulary
+### Configuration Vocabulary
 
 * [fcage:ExecutionNode](./conf.md#node)
 * [fcage:ExecutionNodeWrapper](./conf.md#wrapper)

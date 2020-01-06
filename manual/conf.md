@@ -20,27 +20,21 @@ Base class for all execution node wrappers.
 All execution node wrapper implementation types discoverable from the plugin system are automatically
 marked as subclass of `fcage:ExecutionNodeWrapper`.
 
-### `fcage:hasOutput` {#out}
+### `fcage:hasInput` {#in}
 **Domain**: `fcage:ExecutionNode`  
 **Range**: --- (*see description*)   
 **Description**:  
 There are three ways to define outgoing connections to other execution nodes:
 1. **port-explicit list**  
   The most verbose way to declare outputs. Here the object is an `rdf:List` of resources with the
-  `fcage:toNode` and `fcage:toPort` properties. The object of `fcage:toNode` needs to be an instance
-  of `fcage:ExecutionNode` while the range of `fcage:toPort` is `xsd:integer`.
+  `fcage:fromNode` and `fcage:fromPort` properties. The object of `fcage:fromNode` needs to be an instance
+  of `fcage:ExecutionNode` while the range of `fcage:fromPort` is `xsd:integer`.
 2. **port-implicit list**  
-  In case the destinations of an execution node have no other input or use the `fcage:hasInput`
-  property, this abbreviated form can be used. Here the object is an `rdf:List` of instanced of `fcage:ExecutionNode`. 
+  In the case where all the inputs of an execution node have the port number 0, 
+  this abbreviated form can be used.
+  Here the object is an `rdf:List` of instanced of `fcage:ExecutionNode`.
 3. **port-implicit single**  
-  Shortcut for single output - single input connection. Here the object is just an instance of `fcage:ExecutionNode`.
-
-### `fcage:hasInput` {#in}
-**Domain**: `fcage:ExecutionNode`  
-**Range**: `rdf:List` of `fcage:ExecutionNode`  
-**Description**:  
-This property is only needed when an execution node has *multiple inputs* whose ports are *not* stated
-explicitly.
+  Shortcut for a single input connection with default port number 0. Here the object is just an instance of `fcage:ExecutionNode`.
 
 ### `fcage:decoratedBy` {#deco}
 **Domain**: --- (*see description*)  

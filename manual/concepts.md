@@ -17,7 +17,7 @@ Their interfaces extend on the `Plugin` interface.
 ## Execution Nodes {#nodes}
 Atomic operations are represented by so called execution nodes, which are classes that implement the
 `ExecutionNode<T>` interface, which extend the `Plugin` interface.
-The type parameter stands for the class which represents your data.
+The type parameter `T` stands for the class which represents your data.
 Execution nodes can be parameterized, which is marked by implementing the `Parameterized` interface.
 The easiest and recommended way to write your own execution nodes is by extending our abstract classes
 `AbstractExecutionNode<T>` and `AbstractParameterizedExecutionNode<T>` which implement validity

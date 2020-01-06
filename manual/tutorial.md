@@ -2,6 +2,7 @@
 
 **This section is under construction**
 
+<!--
 ## Kickstarting an Application {#kickstart}
 
 Add the following Maven dependency to your project:
@@ -49,14 +50,13 @@ See [ExampleApplication.java](https://github.com/dice-group/faraday-cage/tree/ma
 
 See [config.ttl](https://github.com/dice-group/faraday-cage/tree/master/example-application/config.ttl)  
 
-<!--
 ```
 @prefix : <urn:example:fcage-tutorial/> .
 @prefix fcage: <http://w3id.org/fcage/> .
 
-:e1 fcage:hasOutput :e2 .
+:e1 fcage:hasInput :e2 .
 
-:e2 fcage:hasOutput ( :e3 :e4 ) .
+:e2 fcage:hasInput ( :e3 :e4 ) .
 
 :e3 fcage:hasOutput ( [ :toNode :e4 ; :toPort 0 ]
                       [ :toNode :e5 ; :toPort 1 ]
@@ -90,10 +90,11 @@ is equivalent to
 ```
 
 so if edges need to be assigned to ports in a different order than the origin ports, explicit syntax needs to be used.
--->
+
 ## Running the Application {#running}
 
 ```
 mvn package shade:shade
 java -jar target/example-application-1.0.0.jar config.ttl
 ```
+-->
