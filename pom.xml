@@ -29,12 +29,12 @@
   <distributionManagement>
     <repository>
       <id>maven.aksw.internal</id>
-      <url>http://maven.aksw.org/archiva/repository/internal</url>
+      <url>https://maven.aksw.org/archiva/repository/internal</url>
     </repository>
     <snapshotRepository>
       <id>maven.aksw.snapshots</id>
       <name>AKSW Snapshot Repository</name>
-      <url>http://maven.aksw.org/archiva/repository/snapshots</url>
+      <url>https://maven.aksw.org/archiva/repository/snapshots</url>
     </snapshotRepository>
   </distributionManagement>
 
@@ -43,13 +43,13 @@
     <repository>
       <id>maven.aksw.internal</id>
       <name>University Leipzig, AKSW Maven2 Internal Repository</name>
-      <url>http://maven.aksw.org/repository/internal/</url>
+      <url>https://maven.aksw.org/repository/internal/</url>
     </repository>
 
     <repository>
       <id>maven.aksw.snapshots</id>
       <name>University Leipzig, AKSW Maven2 Snapshot Repository</name>
-      <url>http://maven.aksw.org/repository/snapshots/</url>
+      <url>https://maven.aksw.org/repository/snapshots/</url>
     </repository>
 
     <repository>
