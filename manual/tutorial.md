@@ -52,7 +52,7 @@ See [config.ttl](https://github.com/dice-group/faraday-cage/tree/master/example-
 
 ```
 @prefix : <urn:example:fcage-tutorial/> .
-@prefix fcage: <http://w3id.org/fcage/> .
+@prefix fcage: <https://w3id.org/fcage/> .
 
 :e1 fcage:hasInput :e2 .
 

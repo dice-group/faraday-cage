@@ -1,13 +1,13 @@
 # Configuration Vocabulary
 
-Configuration graphs are written using the **fcage** vocabulary with the designated namespace `http://w3id.org/fcage/`.  
+Configuration graphs are written using the **fcage** vocabulary with the designated namespace `https://w3id.org/fcage/`.  
 In this section we will document this vocabulary.
 All examples are in *TURTLE* serialization and assume the following prefix definitions:
 ```
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix : <urn:example:fcage-manual/> .
-@prefix fcage: <http://w3id.org/fcage/> .
+@prefix fcage: <https://w3id.org/fcage/> .
 ```
 
 ### `fcage:ExecutionNode` {#node}

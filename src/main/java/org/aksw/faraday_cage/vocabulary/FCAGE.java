@@ -5,11 +5,11 @@ import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
 
 /**
- * Vocabulary for http://w3id.org/fcage/
+ * Vocabulary for https://w3id.org/fcage/
  */
 public class FCAGE {
 
-  public static String NS = "http://w3id.org/fcage/";
+  public static String NS = "https://w3id.org/fcage/";
 
   public static String PREFIX = "fcage";
 

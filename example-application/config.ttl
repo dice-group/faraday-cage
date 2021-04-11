@@ -1,6 +1,6 @@
 @prefix : <urn:example:fcage-tutorial/> .
 @prefix exapp: <urn:example:example-application/> .
-@prefix fcage: <http://w3id.org/fcage/> .
+@prefix fcage: <https://w3id.org/fcage/> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 
 exapp:StringProviderOperation rdfs:subClassOf fcage:ExecutionNode .
