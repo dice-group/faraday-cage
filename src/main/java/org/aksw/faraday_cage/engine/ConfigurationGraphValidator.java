@@ -72,25 +72,7 @@ class ConfigurationGraphValidator {
     allPluginTypes.stream()
       .map(Resource::listProperties)
       .forEach(configGraph::add);
-//    ModelFactory.createInfModel(ReasonerRegistry.getTransitiveReasoner(), configGraph)
-//      .listStatements(null, RDF.type, (RDFNode) null)
-//      .filterKeep(stmt -> stmt.getObject().asResource().hasProperty(RDFS.subClassOf, FCAGE.ExecutionNode))
-//      .forEachRemaining(validationModel::add);
-    Resource validationReport = ValidationUtil.validateModel(configGraph, validationModel, true);
-//    Supplier<String> traceInfo = () -> {
-//      ByteArrayOutputStream stream = new ByteArrayOutputStream();
-//      configGraph.write(stream, "TTL");
-//      validationModel.write(stream, "TTL");
-//      try {
-//        return stream.toString("UTF-8");
-//      } catch (UnsupportedEncodingException e) {
-//        // print and ignore
-//        e.printStackTrace();
-//      }
-//      return "";
-//    };
-//    logger.trace("DEBUG INFO: GRAPHS FOR VALIDATION\n{}", traceInfo);
-    return validationReport;
+    return ValidationUtil.validateModel(configGraph, validationModel, true);
   }
 
   static boolean isConformingValidationReport(Resource validationReport) {
