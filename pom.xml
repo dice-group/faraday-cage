@@ -1,4 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    FARADAY-CAGE - Framework for acyclic directed graphs yielding parallel computations of great efficiency
+    Copyright © 2018 Data Science Group (DICE) (kevin.dressler@uni-paderborn.de)
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+-->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
@@ -8,7 +27,7 @@
 
   <name>FARADAY-CAGE</name>
   <description>Framework for acyclic directed graphs yielding parallel computations of great efficiency</description>
-
+  <inceptionYear>2018</inceptionYear>
   <url>https://github.com/dice-group/faraday-cage</url>
 
   <scm>
@@ -229,6 +248,34 @@
           </dependency>
         </dependencies>
       </plugin>
+
+      <plugin>
+        <groupId>com.mycila</groupId>
+        <artifactId>license-maven-plugin</artifactId>
+        <version>4.0</version>
+        <configuration>
+          <header>com/mycila/maven/plugin/license/templates/AGPL-3.txt</header>
+          <properties>
+            <owner>Data Science Group (DICE)</owner>
+            <email>kevin.dressler@uni-paderborn.de</email>
+          </properties>
+          <excludes>
+            <exclude>**/README.md</exclude>
+            <exclude>**/LICENSE</exclude>
+            <exclude>**/Dockerfile</exclude>
+            <exclude>**/docs/**</exclude>
+            <exclude>**/manual/**</exclude>
+            <exclude>**/node_modules/**</exclude>
+            <exclude>example-application/**</exclude>
+            <exclude>**/src/test/resources/**</exclude>
+            <exclude>**/src/main/resources/**</exclude>
+            <exclude>**/target/**</exclude>
+            <exclude>deer-web-ui/**</exclude>
+            <exclude>fcage/**</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+
     </plugins>
   </build>
 
