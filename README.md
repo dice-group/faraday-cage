@@ -5,10 +5,8 @@
 ![Java 11+](https://img.shields.io/badge/java-11+-lightgray.svg)
 
 [comment]: <> ([![Codacy Badge]&#40;https://api.codacy.com/project/badge/Grade/b2d1aa91a51f4beab8bd3ed18ba0c729&#41;]&#40;https://www.codacy.com/app/kvndrsslr/faraday-cage?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=dice-group/faraday-cage&amp;utm_campaign=Badge_Grade&#41;)
-<div style="text-align: center;">
 
-![LOGO](https://raw.githubusercontent.com/dice-group/faraday-cage/master/docs/_media/fcage.svg)
-</div>
+<img align="right" width="160" src="https://raw.githubusercontent.com/dice-group/faraday-cage/master/docs/_media/fcage.svg">
 
 **FARADAY-CAGE** is the **F**r**a**mework fo**r** **A**cyclic **D**irected Graphs **Y**ielding
 Parallel **C**omput**a**tions of **G**reat **E**fficiency. It originated from the execution engine
