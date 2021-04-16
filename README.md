@@ -1,9 +1,11 @@
 # FARADAY-CAGE 
 
-[![Build Status](https://travis-ci.org/dice-group/faraday-cage.svg?branch=master)](https://travis-ci.org/dice-group/faraday-cage)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/b2d1aa91a51f4beab8bd3ed18ba0c729)](https://www.codacy.com/app/kvndrsslr/faraday-cage?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=dice-group/faraday-cage&amp;utm_campaign=Badge_Grade)
+[![Build Status](https://github.com/dice-group/faraday-cage/actions/workflows/run-tests.yml/badge.svg?branch=master&event=push)](https://github.com/dice-group/faraday-cage/actions/workflows/run-tests.yml)
 [![GNU Affero General Public License v3.0](https://img.shields.io/badge/license-GNU_Affero_General_Public_License_v3.0-blue.svg)](./LICENSE)
-![Java 1.9+](https://img.shields.io/badge/java-1.9+-lightgray.svg)
+![Java 11+](https://img.shields.io/badge/java-11+-lightgray.svg)
+
+[comment]: <> ([![Codacy Badge]&#40;https://api.codacy.com/project/badge/Grade/b2d1aa91a51f4beab8bd3ed18ba0c729&#41;]&#40;https://www.codacy.com/app/kvndrsslr/faraday-cage?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=dice-group/faraday-cage&amp;utm_campaign=Badge_Grade&#41;)
+
 
 **FARADAY-CAGE** is the **F**r**a**mework fo**r** **A**cyclic **D**irected Graphs **Y**ielding
 Parallel **C**omput**a**tions of **G**reat **E**fficiency. It originated from the execution engine
@@ -26,7 +28,7 @@ Will be made available with the first stable release.
   <dependency>
     <groupId>org.aksw.faraday_cage</groupId>
     <artifactId>faraday-cage</artifactId>
-    <version>{insert version here}</version>
+    <version>1.1.0</version>
   </dependency>
 </dependencies>
 
