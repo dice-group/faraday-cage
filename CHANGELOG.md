@@ -23,6 +23,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 
-## [1.1.1]((https://github.com/docsifyjs/docsify/compare/1.1.1...1.1.0)) (2021-04-12)
+## [1.1.1](https://github.com/dice-group/faraday-cage/compare/1.1.1...1.1.0) (2021-04-12)
 
 Start of Changelog History
