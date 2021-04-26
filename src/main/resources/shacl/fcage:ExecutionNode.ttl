@@ -8,55 +8,76 @@
 
 fcage:
   sh:declare [
-    sh:prefix "fcage" ;
-    sh:namespace "https://w3id.org/fcage/"^^xsd:anyURI ;
-  ] ;
+               sh:prefix "fcage" ;
+               sh:namespace "https://w3id.org/fcage/"^^xsd:anyURI ;
+             ] ;
   sh:declare [
-    sh:prefix "rdf" ;
-    sh:namespace "http://www.w3.org/1999/02/22-rdf-syntax-ns#"^^xsd:anyURI ;
-  ] ;
+               sh:prefix "rdf" ;
+               sh:namespace "http://www.w3.org/1999/02/22-rdf-syntax-ns#"^^xsd:anyURI ;
+             ] ;
 .
 
-fcage:InputDeclarationPresent
-  a sh:PropertyShape ;
-  sh:path fcage:hasInput ;
-  sh:maxCount 1 ;
-  sh:minCount 1 ;
+fcage:ExecutionNodeShape
+  a sh:NodeShape ;
+  sh:targetClass fcage:ExecutionNode ;
+  sh:property fcage:ExecutionNode_hasInputShape ;
+  sh:message "Invalid Input declaration! Please consult the documentation on how to declare Inputs." ;
 .
 
-fcage:InputDeclarationSingle
+fcage:ExecutionNode_hasInputShape
   a sh:PropertyShape ;
+  sh:minCount 0;
+  sh:maxCount 1;
   sh:path fcage:hasInput ;
-  sh:class fcage:ExecutionNode ;
+  sh:node fcage:ExecutionNodeInputDescriptionShape ;
+.
+
+fcage:ExecutionNodeInputDescriptionShape
+  a sh:NodeShape ;
+  sh:xone (
+            [ sh:class fcage:ExecutionNode ]
+            [ sh:property fcage:InputDeclarationList ]
+            [ sh:property fcage:InputDeclarationPortExplicitList ]
+          ) ;
+  sh:message "Invalid Input declaration! Please consult the documentation on how to declare Inputs." ;
 .
 
 fcage:InputDeclarationList
   a sh:PropertyShape ;
   sh:minCount 1 ;
-  sh:path ( fcage:hasInput [ sh:zeroOrMorePath rdf:rest ] rdf:first ) ;
+  sh:path ( [ sh:zeroOrMorePath rdf:rest ] rdf:first ) ;
   sh:class fcage:ExecutionNode ;
 .
 
 fcage:InputDeclarationPortExplicitList
   a sh:PropertyShape ;
   sh:minCount 1 ;
-  sh:path ( fcage:hasInput [ sh:zeroOrMorePath rdf:rest ] rdf:first ) ;
+  sh:path ( [ sh:zeroOrMorePath rdf:rest ] rdf:first ) ;
   sh:node [
-    a sh:NodeShape ;
-    sh:property [ sh:path fcage:fromPort ; sh:datatype xsd:integer ; sh:minCount 1 ; sh:maxCount 1 ] ;
-    sh:property [ sh:path fcage:fromNode ; sh:class fcage:ExecutionNode ; sh:minCount 1 ; sh:maxCount 1 ] ;
-  ] ;
+            a sh:NodeShape ;
+            sh:property [ sh:path fcage:fromPort ; sh:datatype xsd:integer ; sh:minCount 1 ; sh:maxCount 1 ] ;
+            sh:property [ sh:path fcage:fromNode ; sh:class fcage:ExecutionNode ; sh:minCount 1 ; sh:maxCount 1 ] ;
+          ] ;
 .
 
-fcage:InputDeclarationValidator
+fcage:decoratedBy_targetSubjectsShape
   a sh:NodeShape ;
-  sh:targetClass fcage:ExecutionNode ;
-  sh:xone (
-    [ sh:property [ sh:path fcage:hasInput ; sh:maxCount 0 ] ] # exactly no Input
-    [ sh:property fcage:InputDeclarationPresent, fcage:InputDeclarationSingle ] # Input-single port-implicit,
-    [ sh:property fcage:InputDeclarationPresent, fcage:InputDeclarationList ] # Input-list port-implicit,
-    [ sh:property fcage:InputDeclarationPresent, fcage:InputDeclarationPortExplicitList ] # Input-only port-explicit
-  ) ;
-  sh:message "Invalid Input declaration! Please consult the documentation on how to declare Inputs." ;
+  sh:targetSubjectsOf fcage:decoratedBy ;
+  sh:class rdfs:Class ;
+  sh:property [
+                a sh:PropertyShape ;
+                sh:minCount 1 ;
+                sh:path ( [ sh:oneOrMorePath rdfs:subClassOf ] ) ;
+                sh:class fcage:ExecutionNode ;
+              ] ;
+  sh:message "Invalid decoratedByShape declaration! Please consult the documentation on how to declare Inputs." ;
 .
 
+fcage:decoratedBy_targetObjectsShape
+  a sh:NodeShape ;
+  sh:xone (
+            [ sh:class fcage:ExecutionNodeWrapper ]
+            [ sh:property [ sh:path ( [ sh:zeroOrMorePath rdf:rest ] rdf:first ) ; sh:class fcage:ExecutionNodeWrapper ; sh:minCount 1 ] ]
+          ) ;
+  sh:message "Invalid decoratedByShape declaration! Please consult the documentation on how to declare Inputs." ;
+.

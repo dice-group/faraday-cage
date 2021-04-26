@@ -1,2 +1,2 @@
-##### Operator
-this is something
+##### Empty Glossary
+This glossary is currently empty

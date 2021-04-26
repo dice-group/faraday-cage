@@ -143,7 +143,7 @@ public class FaradayCageContext<U extends ExecutionNode<T>, V extends ExecutionN
 //    }
     time.split();
     logger.info("Execution graph built after {}ms.", time.getSplitTime());
-    CompiledExecutionGraph compiled = CompiledExecutionGraph.of(executionGraph);
+    CompiledExecutionGraph compiled = CompiledExecutionGraph.of(executionGraph, runId);
     time.split();
     logger.info("Execution graph compiled after {}ms.", time.getSplitTime());
     return compiled;

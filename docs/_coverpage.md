@@ -14,4 +14,4 @@ If you believe a part of this documentation to be inaccurate or outdated, please
 
 
 [GitHub](https://github.com/dice-group/faraday-cage/)
-[Get Started](#docsify)
+[Get Started](#FARADAY-CAGE)
