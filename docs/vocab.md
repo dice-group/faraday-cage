@@ -134,7 +134,7 @@ ex:node4 a ex:MyExecutionNodeType ;
 ex:node5 a ex:MyExecutionNodeType ;
          fcage:hasInput ( [ fcage:fromNode ex:node1 ; fcage:fromPort 2 ] 
                           [ fcage:fromNode ex:node2 ; fcage:fromPort 2 ]
-                          [ fcage:fromNode ex:node 4 ; fcage:fromPort 1 ]
+                          [ fcage:fromNode ex:node4 ; fcage:fromPort 1 ]
                         ) .
 ```
 
