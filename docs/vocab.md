@@ -2,7 +2,7 @@
 
 The following RDF graph enumerates all classes and properties used in the vocabulary.
 
-```Turtle
+```turtle
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
@@ -37,7 +37,7 @@ fcage:decoratedBy a rdf:Property ;
 
 The classes `fcage:ExecutionNodeInputDescription` and `fcage:ExecutionNodeWrapperDescription` are implicit classes whose instances are expected to validate against the SHACL shapes as given in the following RDF graph.
 
-```Turtle
+```turtle
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix sh: <http://www.w3.org/ns/shacl#> .
@@ -112,7 +112,7 @@ fcage:decoratedBy_targetObjectsShape
 
 An example for a valid configuration graph is given in the following RDF graph.
 
-```Turtle
+```turtle
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
