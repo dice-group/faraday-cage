@@ -17,8 +17,9 @@
 
 ## Getting Started
 
+- Read our [motivation](motivation)
 - Learn about the [basics concepts](concepts)
-- Dive into the [example application](example-application)
+<!-- - Dive into the [example application](example-application) -->
 
 ## Special Thanks
 
