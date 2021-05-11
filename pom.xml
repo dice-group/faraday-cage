@@ -23,7 +23,7 @@
 
   <groupId>org.aksw.faraday_cage</groupId>
   <artifactId>faraday-cage</artifactId>
-  <version>1.2.1-SNAPSHOT</version>
+  <version>1.2.0</version>
 
   <name>FARADAY-CAGE</name>
   <description>Framework for acyclic directed graphs yielding parallel computations of great efficiency</description>
